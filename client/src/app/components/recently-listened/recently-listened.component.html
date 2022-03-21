@@ -1,0 +1,46 @@
+<!-- <section class="hero is-info mb-3">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                🎧 Twoje ostatnie 50 przesłuchanych kawałków 🎧
+            </h1>
+        </div>
+    </div>
+</section>
+
+<div class="container center">
+
+    <progress class="progress is-large is-info" *ngIf="!isLoaded"></progress>
+
+    <div class="columns" style="flex-wrap: wrap;" *ngIf="isLoaded">
+        <div class="column is-one-third-desktop is-half-tablet is-full-mobile is-offset-1-mobile"
+            *ngFor="let track of tracks">
+
+            <article class="media is-relative" style="width: 410px;">
+                <figure class="media-left">
+                    <p class="image is-128x128">
+                        <img [src]="track.image">
+                    </p>
+                </figure>
+                <div class="media-content">
+                    <div class="content">
+                        <h4 class="word-wrap">
+                            {{track.name}}
+                        </h4>
+                        <p class="word-wrap">
+                            <span *ngFor="let artist of track.artists; let i=index">
+                                {{artist}}{{i===track.artists.length-1 ? '' : ','}}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </article>
+            <audio controls>
+                <source [src]="track.preview_url" type="audio/mpeg">
+            </audio>
+
+        </div>
+    </div>
+</div> -->
+
+<!-- NEW -->

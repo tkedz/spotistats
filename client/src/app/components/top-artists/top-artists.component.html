@@ -1,0 +1,26 @@
+<div class="has-background-light">
+    <div class="container">
+        <div class="columns" style="flex-wrap: wrap;">
+            <div class="column is-one-third has-text-centered" *ngFor="let artist of top3artists; let i = index;">
+                <app-card [artist]="artist" id="top3"></app-card>
+                <div *ngIf="i===0" class="medal">🥇</div>
+                <div *ngIf="i===1" class="medal">🥈</div>
+                <div *ngIf="i===2" class="medal">🥉</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+<div class="columns mt-3" style="flex-wrap: wrap;">
+    <div class="column is-one-quarter" *ngFor="let artist of artists">
+        <app-card [artist]="artist" id="rest"></app-card>
+    </div>
+</div> -->
+
+<!-- NEW -->
+
+<div style="display: flex; flex-wrap: wrap;">
+    <div *ngFor="let artist of artists">
+        <app-card [artist]="artist" id="rest"></app-card>
+    </div>
+</div>

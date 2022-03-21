@@ -1,0 +1,57 @@
+.navbar {
+  height: 8vh;
+  background-color: var(--color-primary);
+  background-color: rgba(0, 32, 61, 0.8);
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 32, 61, 0.8),
+    rgba(237, 175, 184, 0.8)
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 2rem;
+  padding: 0 1rem;
+  text-decoration: none;
+  color: var(--color-grey-light-1);
+
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 20;
+}
+
+.navbar__end {
+  padding: 0 1rem;
+
+  display: flex;
+  align-items: center;
+
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 20;
+}
+
+.navbar__item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.navbar__item--profile {
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+}
+
+.button--login {
+  background-color: var(--color-secondary);
+}
+
+.button--logout {
+  background-color: #bf0603;
+  color: var(--color-grey-light-1);
+}

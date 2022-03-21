@@ -1,0 +1,84 @@
+<!-- <ng-container *ngIf="artist">
+    <div class="card-custom is-relative" [id]="id">
+        <div class="image">
+            <img [src]="artist.image">
+        </div>
+        <div class="card-hover has-text-centered has-text-white has-text-weight-medium">
+            <p class="is-size-4 is-family-monospace py-2 has-text-weight-bold">{{artist.name}}</p>
+            <p class="is-size-6">Popularność</p>
+            <span class="is-size-4 has-text-weight-bold"
+                [ngClass]="{'has-text-success': artist.popularity >= 70, 'has-text-warning': artist.popularity >=45 && artist.popularity < 70, 'has-text-danger': artist.popularity < 45}">📊
+                {{artist.popularity}} 📊</span><br>
+            <ng-container *ngFor="let genre of artist.genres; let i = index">
+                <span class="tag is-info mx-1 my-1" *ngIf="i < 6">{{genre}}</span>
+            </ng-container>
+            <a class="button is-success is full-width" [href]="artist.spotifyURI">Otwórz w Spotify</a>
+        </div>
+    </div>
+</ng-container> -->
+
+<ng-container *ngIf="artist">
+    <div class="card">
+        <div class="card__image">
+            <img class="card__image" [src]="artist.image">
+        </div>
+        <div class="card__name-border" #cardNameBorder></div>
+        <div class="card__name" #cardNameDiv>
+            <div class="heading-3">{{artist.name}}</div>
+        </div>
+        <a class="card__link" [href]="artist.spotifyURI">
+            <img src="assets/spotify.svg" alt="" class="card__link-icon">
+        </a>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="track">
+
+    <div class="card">
+        <div class="card__image">
+            <img class="card__image" [src]="track.image">
+        </div>
+        <div class="card__name-border" #cardNameBorder></div>
+        <div class="card__name" #cardNameDiv>
+            <div class="heading-3">{{track.name | removeParenthesis}}</div>
+            <div>
+                <ng-container *ngFor="let artist of track.artists; let i = index">
+                    <span class="heading-4" *ngIf="i < 6">{{artist}}</span>
+                    <span *ngIf="i < track.artists.length - 1">, </span>
+                </ng-container>
+            </div>
+        </div>
+        <a class="card__link" [href]="track.spotifyURI">
+            <img src="assets/spotify.svg" alt="" class="card__link-icon">
+        </a>
+    </div>
+    <audio controls>
+        <source [src]="track.preview_url">
+    </audio>
+
+</ng-container>
+
+<!--
+<ng-container *ngIf="track">
+    <div class="card-custom is-relative" [id]="id">
+        <div class="image">
+            <img [src]="track.image">
+        </div>
+        <div class="card-hover has-text-centered has-text-white has-text-weight-medium">
+            <p class="is-size-4 is-family-monospace py-2 has-text-weight-bold">{{track.name | removeParenthesis}}</p>
+            <ng-container *ngFor="let artist of track.artists; let i = index">
+                <span class="tag is-info mx-1 my-1" *ngIf="i < 6">{{artist}}</span>
+            </ng-container>
+            <p class="is-size-6">Popularność</p>
+            <span class="is-size-4 has-text-weight-bold"
+                [ngClass]="{'has-text-success': track.popularity >= 70, 'has-text-warning': track.popularity >=45 && track.popularity < 70, 'has-text-danger': track.popularity < 45}">📊
+                {{track.popularity}} 📊</span><br>
+            <a class="button is-success is full-width" [href]="track.spotifyURI">Otwórz w Spotify</a>
+        </div>
+    </div>
+    <audio [ngClass]="{'audio-top3': id === 'top3', 'audio-rest': id === 'rest'}" controls>
+        <source [src]="track.preview_url">
+    </audio>
+</ng-container> -->
+
+<!-- NEW -->

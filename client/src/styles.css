@@ -1,0 +1,116 @@
+/* You can add global styles to this file, and also import other style files */
+/* .center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.word-wrap {
+  overflow-wrap: break-word;
+}
+
+.medal {
+  font-size: 128px;
+}
+
+@media only screen and (min-width: 1px) and (max-width: 1215px) {
+  .medal {
+    font-size: 64px;
+  }
+} */
+
+/* https://coolors.co/6f2dbd-a663cc-b298dc-b8d0eb-b9faf8 */
+
+/* NEW */
+:root {
+  --color-primary: #a663cc;
+  --color-primary-light: #b298dc;
+  --color-primary-dark: #6f2dbd;
+
+  --color-secondary: #b9faf8;
+  --color-tertiary: #b8d0eb;
+
+  --color-grey-light-1: #faf9f9;
+  --color-grey-light-2: #f4f2f2;
+  --color-grey-light-3: #f0eeee;
+  --color-grey-light-4: #ccc;
+
+  --color-grey-dark-1: #333;
+  --color-grey-dark-2: #777;
+  --color-grey-dark-3: #999;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  /* font-size: 62.5%; */
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  position: relative;
+  min-height: 99.99999vh;
+  font-size: 1.4rem;
+
+  background-image: linear-gradient(
+    to right,
+    rgba(111, 45, 189, 0.8),
+    rgba(178, 152, 220, 0.8)
+  );
+}
+
+section::before {
+  content: "";
+  display: block;
+  height: 8vh;
+}
+
+.button {
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  box-shadow: none;
+  cursor: pointer;
+  color: #000;
+  font-size: 1.4rem;
+}
+
+.heading-4 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-grey-dark-2);
+  text-transform: uppercase;
+}
+
+.heading-3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-grey-dark-2);
+  text-transform: uppercase;
+}
+
+.heading-1 {
+  font-size: 8rem;
+  font-weight: 800;
+  color: var(--color-grey-light-1);
+  text-transform: uppercase;
+}
+
+.container {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+}

@@ -1,0 +1,127 @@
+/* .card-custom {
+  margin: 0 auto;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#top3 {
+  width: 320px;
+  height: 320px;
+}
+
+#rest {
+  width: 270px;
+  height: 270px;
+}
+
+audio {
+  margin: 0 auto;
+  display: block;
+}
+
+.audio-rest {
+  width: 270px;
+}
+
+.audio-top3 {
+  width: 320px;
+}
+
+.card-custom .image {
+  z-index: 3;
+}
+
+.card-custom:hover .image,
+.card-custom:active .image {
+  z-index: 1;
+}
+
+.card-hover {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+a {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  border-radius: 0;
+}
+
+@media only screen and (min-width: 1px) and (max-width: 1215px) {
+  .card-custom {
+    width: 256px;
+    height: 256px;
+  }
+} */
+
+/* NEW */
+.card {
+  position: relative;
+  width: 32rem;
+  height: 32rem;
+}
+
+.card__image {
+  width: 100%;
+  height: 100%;
+  /* overflow: hidden; */
+}
+
+.card__name {
+  background-color: var(--color-secondary);
+
+  /* width: 0; */
+  min-height: 5rem;
+  width: 97.5%;
+  padding: 1rem;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+
+  clip-path: polygon(0 0, 80% 0, 100% 100%, 0% 100%);
+}
+
+.card__name div {
+  width: 80%;
+}
+
+.card__name-border {
+  /* width: 0; */
+  width: 100%;
+  /* min-height set in .ts file */
+  display: block;
+  background-color: var(--color-primary);
+  clip-path: polygon(0 0, 80% 0, 100% 100%, 0% 100%);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.card__link {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+
+  width: 3rem;
+  height: 3rem;
+}
+
+.card__link-icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+audio {
+  width: 100%;
+}

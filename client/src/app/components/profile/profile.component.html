@@ -1,0 +1,83 @@
+<!-- <section class="section pb-0">
+
+    <div class="container center">
+        <article class="media">
+            <div class="center">
+                <figure class="media-left">
+                    <p class="image is-128x128 is-3by2">
+                        <img [src]="user.img" class="is-rounded">
+                    </p>
+                </figure>
+                <div class="media-content">
+                    <div class="content">
+                        <h1>{{user.displayName}}</h1>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="tabs is-centered mt-3 mb-0">
+        <ul>
+            <li routerLinkActive="is-active" [routerLinkActiveOptions]="{exact: true}"><a routerLink="./">Ostatnio
+                    słuchane</a></li>
+            <li routerLinkActive="is-active"><a routerLink="./top-artists">Ulubieni artyści</a></li>
+            <li routerLinkActive="is-active"><a routerLink="./top-tracks">Ulubione kawałki</a></li>
+            <li routerLinkActive="is-active"><a routerLink="./comparision">Porównania</a></li>
+        </ul>
+    </div>
+
+</section>
+<router-outlet></router-outlet> -->
+
+<!-- NEW -->
+<section class="profile">
+    <div class="profile_wrapper">
+        <img [src]="user.img" alt="" class="profile__photo">
+        <span class="profile__name">{{user.displayName}}</span>
+
+        <nav class="nav">
+            <ul class="nav__content">
+                <a routerLink="./">
+                    <li class="nav__item" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact: true}">
+                        Ostatnio
+                        słuchane</li>
+                </a>
+                <li class="nav__item dropdown--1" routerLinkActive="is-active">
+                    <a>Ulubieni artyści</a>
+                    <ul class="dropdown__content--1">
+                        <a routerLink="./top-artists" [queryParams]="{timeRange: 'short_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">ostatni
+                                miesiąc</li>
+                        </a>
+                        <a routerLink="./top-artists" [queryParams]="{timeRange: 'medium_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">ostatnie pół roku</li>
+                        </a>
+                        <a routerLink="./top-artists" [queryParams]="{timeRange: 'long_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">dłuższy czas</li>
+                        </a>
+                    </ul>
+                </li>
+                <li class="nav__item dropdown--2" routerLinkActive="is-active">
+                    <a>Ulubione utwory</a>
+                    <ul class="dropdown__content--2">
+                        <a routerLink="./top-tracks" [queryParams]="{timeRange: 'short_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">ostatni miesiąc</li>
+                        </a>
+                        <a routerLink="./top-tracks" [queryParams]="{timeRange: 'medium_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">ostatnie pół roku</li>
+                        </a>
+                        <a routerLink="./top-tracks" [queryParams]="{timeRange: 'long_term'}">
+                            <li class="dropdown__item" routerLinkActive="is-active">dłuższy czas</li>
+                        </a>
+                    </ul>
+                </li>
+                <a routerLink="./comparision">
+                    <li class="nav__item" routerLinkActive="is-active">Porównania</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+
+    <router-outlet></router-outlet>
+</section>
