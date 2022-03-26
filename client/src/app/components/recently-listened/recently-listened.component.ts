@@ -17,6 +17,7 @@ export class RecentlyListenedComponent implements OnInit, OnDestroy {
   userSub: Subscription;
   tracks: Array<TrackResponse> = [];
   isLoaded: boolean = false;
+  error: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -24,16 +25,26 @@ export class RecentlyListenedComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.error = false;
+
     this.userSub = this.authService.user.subscribe((user) => {
       this.user = user;
-      this.spotifyService
-        .getRecentlyPlayedTracks(this.user)
-        .subscribe((tracks) => {
-          this.tracks = tracks;
-          console.log(tracks);
-          this.isLoaded = true;
-        });
     });
+
+    this.onGetRecentlyPlayed();
+  }
+  
+  
+  onGetRecentlyPlayed(): void {
+    this.spotifyService
+    .getRecentlyPlayedTracks(this.user)
+    .subscribe((tracks) => {
+      this.tracks = tracks;
+      console.log(tracks);
+      this.isLoaded = true;
+    }, (err) => {
+      this.error = true;
+    })
   }
 
   ngOnDestroy(): void {

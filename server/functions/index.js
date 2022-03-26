@@ -3,23 +3,23 @@
 //run firebase emulator = firebase emulators:start
 
 const functions = require('firebase-functions');
-const express = require('express');
+const { getFirestore } = require('firebase-admin/firestore');
 const url = require('url');
 const axios = require('axios');
+const cors = require('cors')({ origin: true });
 const config = require('../config/config');
 const serviceAccount = require('../config/serviceAccount.json');
-const cors = require('cors')({ origin: true });
 
 const admin = require('firebase-admin');
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+const db = getFirestore();
 
-const app = express();
-
-exports.redirect = functions.https.onRequest((req, res) => {
-    res.redirect(
-        `https://accounts.spotify.com/authorize?client_id=${config.spotifyClientId}&response_type=code&redirect_uri=${config.spotifyRedirectUri}&scope=user-top-read,user-read-recently-played`
-    );
-});
+const app = require('./api');
+// exports.redirect = functions.https.onRequest((req, res) => {
+//     res.redirect(
+//         `https://accounts.spotify.com/authorize?client_id=${config.spotifyClientId}&response_type=code&redirect_uri=${config.spotifyRedirectUri}&scope=user-top-read,user-read-recently-played`
+//     );
+// });
 
 exports.login = functions.https.onRequest(async (req, res) => {
     return cors(req, res, async () => {
@@ -52,7 +52,6 @@ exports.login = functions.https.onRequest(async (req, res) => {
 
             //get user profile
             const loggedUser = await getMe(spotifyResult.data.access_token);
-            if (!loggedUser) throw 'Could not get user data';
 
             //mint custom token for firebase auth using spotify id
             const customToken = await admin
@@ -77,10 +76,14 @@ exports.login = functions.https.onRequest(async (req, res) => {
                 expiresIn: 3600,
             };
 
+            await db.collection('tokens').doc(loggedUser.id).set({
+                spotifyAccessToken: spotifyResult.data.access_token,
+            });
+
             res.status(200).json(dataToReturn);
         } catch (error) {
             functions.logger.log(error);
-            res.status(400).json({ error });
+            res.status(400).json({ error: error.message });
         }
     });
 });
@@ -88,17 +91,12 @@ exports.login = functions.https.onRequest(async (req, res) => {
 exports.api = functions.https.onRequest(app);
 
 const getMe = async (accessToken) => {
-    try {
-        const result = await axios.get('https://api.spotify.com/v1/me', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
-        });
+    const result = await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    });
 
-        return result.data;
-    } catch (err) {
-        console.log(err);
-        return null;
-    }
+    return result.data;
 };

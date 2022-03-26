@@ -1,4 +1,4 @@
-<div class="has-background-light">
+<!-- <div class="has-background-light">
     <div class="container">
         <div class="columns" style="flex-wrap: wrap;">
             <div class="column is-one-third has-text-centered" *ngFor="let artist of top3artists; let i = index;">
@@ -9,7 +9,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <!--
 <div class="columns mt-3" style="flex-wrap: wrap;">
     <div class="column is-one-quarter" *ngFor="let artist of artists">
@@ -18,7 +18,7 @@
 </div> -->
 
 <!-- NEW -->
-
+<p *ngIf="error">Nie udało się pobrać danych ze Spotify</p>
 <div style="display: flex; flex-wrap: wrap;">
     <div *ngFor="let artist of artists">
         <app-card [artist]="artist" id="rest"></app-card>

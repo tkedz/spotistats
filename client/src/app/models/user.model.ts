@@ -9,14 +9,14 @@ export class User {
     public displayName: string,
     public id: string,
     private images: Image[],
-    private _spotifyToken: string,
+    //private _spotifyToken: string,
     private _firebaseToken: string,
     private _expiration: number
   ) {}
 
-  get spotifyToken() {
-    return this._spotifyToken;
-  }
+  // get spotifyToken() {
+  //   return this._spotifyToken;
+  // }
 
   get firebaseToken() {
     return this._firebaseToken;

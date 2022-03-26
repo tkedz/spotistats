@@ -6,6 +6,7 @@ import {
 } from 'src/app/services/spotify.service';
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-stats',
@@ -14,8 +15,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TopArtistsComponent implements OnInit {
   user: User = null;
+  userSub: Subscription;
   top3artists: Array<ArtistResponse> = [];
   artists: Array<ArtistResponse> = [];
+  error: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -24,7 +27,9 @@ export class TopArtistsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.user.subscribe((user) => {
+    this.error = false;
+
+    this.userSub = this.authService.user.subscribe((user) => {
       this.user = user;
     });
 
@@ -35,13 +40,19 @@ export class TopArtistsComponent implements OnInit {
   }
 
   onGetFavArtists(timeRange: string) {
+    this.error = false;
+
     this.spotifyService.getFavourite('artists', this.user, timeRange).subscribe(
       (res) => {
         console.log(res);
         this.top3artists = res.slice(0, 3);
         this.artists = res.slice(3);
       },
-      (err) => console.log(err)
+      (err) => {this.error = true;}
     );
+  }
+
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe();
   }
 }

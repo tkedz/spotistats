@@ -46,21 +46,23 @@ export class AuthService {
   // }
 
   login(code: string) {
-    console.log(code);
+    //console.log(code);
     this.http.post<any>('http://localhost:5001/mgr-backend/us-central1/login',{code}).subscribe((userData)=>{
       console.log(userData)
       const loggedUser = new User(
         userData.displayName,
         userData.id,
         userData.images as Image[],
-        userData.spotifyAccessToken,
+        //userData.spotifyAccessToken,
         userData.firebaseAccessToken,
         Math.ceil(new Date().getTime() / 1000) + +userData.expiresIn!
       );
       this.user.next(loggedUser);
       localStorage.setItem('userData', JSON.stringify(loggedUser));
       this.autoLogout(+userData.expiresIn! * 1000);
-    }, (error) => console.log(error.message));
+    }, (error) => {
+      //TODO login error
+      console.log('Nie udało się zalogować, spróbuj ponownie później')});
   }
 
   autoLogin() {
@@ -71,7 +73,7 @@ export class AuthService {
         user.displayName,
         user.id,
         user.images as Image[],
-        user._spotifyToken,
+        //user._spotifyToken,
         user._firebaseToken,
         +user._expiration
       );

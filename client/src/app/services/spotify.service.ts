@@ -34,18 +34,19 @@ export class SpotifyService {
 
   getRecentlyPlayedTracks(user: User): Observable<Array<TrackResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.spotifyToken}`,
+      Authorization: `Bearer ${user.firebaseToken}`,
     });
 
     return this.http
       .get<any>(
-        'https://api.spotify.com/v1/me/player/recently-played?limit=50',
+        'http://localhost:5001/mgr-backend/us-central1/api/recently-played',
         {
           headers: authHeader,
         }
       )
       .pipe(
         map((res) => {
+          console.log(res)
           return res.items.map((item: any) => {
             return {
               artists: item.track.artists.map((artist: any) => {
@@ -68,12 +69,12 @@ export class SpotifyService {
     timeRange: string
   ): Observable<Array<TrackResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.spotifyToken}`,
+      Authorization: `Bearer ${user.firebaseToken}`,
     });
 
     return this.http
       .get<any>(
-        `https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}&limit=50`,
+        `http://localhost:5001/mgr-backend/us-central1/api/top/tracks?time_range=${timeRange}&limit=50`,
         {
           headers: authHeader,
         }
@@ -102,12 +103,12 @@ export class SpotifyService {
     timeRange: string
   ): Observable<Array<ArtistResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.spotifyToken}`,
+      Authorization: `Bearer ${user.firebaseToken}`,
     });
 
     return this.http
       .get<any>(
-        `https://api.spotify.com/v1/me/top/artists?time_range=${timeRange}&limit=50`,
+        `http://localhost:5001/mgr-backend/us-central1/api/top/artists?time_range=${timeRange}&limit=50`,
         {
           headers: authHeader,
         }
