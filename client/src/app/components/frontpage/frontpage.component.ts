@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
@@ -15,8 +16,11 @@ export class FrontpageComponent implements OnInit {
 
   ngOnInit(): void {
     //const fragment = this.route.snapshot.fragment;
+    console.log('frontpage init')
     const code = this.route.snapshot.queryParams['code'];
-    if(code)
+    
+    if(code && !User.checkStorage()) {
       this.authService.login(code);
+    }
   }
 }

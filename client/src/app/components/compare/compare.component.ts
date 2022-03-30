@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute } from '@angular/router';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-compare',
@@ -15,14 +15,14 @@ export class CompareComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private firebaseService: FirebaseService
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
     this.authService.user.subscribe((user) => {
       this.user = user;
 
-      this.firebaseService
+      this.storageService
         .fetchDataToCompare(this.user, this.route.snapshot.paramMap.get('id'))
         .subscribe((res) => {
           console.log(res);

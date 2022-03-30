@@ -10,7 +10,8 @@ export class User {
     public id: string,
     private images: Image[],
     //private _spotifyToken: string,
-    private _firebaseToken: string,
+    private _accessToken: string,
+    private _refreshToken:string,
     private _expiration: number
   ) {}
 
@@ -18,8 +19,17 @@ export class User {
   //   return this._spotifyToken;
   // }
 
-  get firebaseToken() {
-    return this._firebaseToken;
+  get accessToken() {
+    return this._accessToken;
+  }
+
+  
+  set accessToken(v) {
+    this._accessToken = v;
+  }
+  
+  get refreshToken() {
+    return this._refreshToken;
   }
 
   get expiration() {
@@ -28,5 +38,19 @@ export class User {
 
   get img() {
     return this.images[0].url;
+  }
+
+  save() {
+    localStorage.setItem('userData', JSON.stringify(this))
+  }
+
+  remove() {
+    localStorage.removeItem('userData');
+  }
+
+  static checkStorage(): boolean {
+    if(localStorage.getItem('userData')) 
+      return true;
+    else return false;
   }
 }

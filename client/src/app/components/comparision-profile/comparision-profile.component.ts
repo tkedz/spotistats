@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-comparision-profile',
@@ -13,7 +13,7 @@ export class ComparisionProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private firebaseService: FirebaseService
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
@@ -23,6 +23,6 @@ export class ComparisionProfileComponent implements OnInit {
   }
 
   onSaveData() {
-    this.firebaseService.saveData(this.user);
+    this.storageService.saveData(this.user);
   }
 }

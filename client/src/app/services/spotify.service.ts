@@ -34,7 +34,7 @@ export class SpotifyService {
 
   getRecentlyPlayedTracks(user: User): Observable<Array<TrackResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.firebaseToken}`,
+      Authorization: `Bearer ${user.accessToken}`,
     });
 
     return this.http
@@ -69,7 +69,7 @@ export class SpotifyService {
     timeRange: string
   ): Observable<Array<TrackResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.firebaseToken}`,
+      Authorization: `Bearer ${user.accessToken}`,
     });
 
     return this.http
@@ -103,7 +103,7 @@ export class SpotifyService {
     timeRange: string
   ): Observable<Array<ArtistResponse>> {
     const authHeader = new HttpHeaders({
-      Authorization: `Bearer ${user.firebaseToken}`,
+      Authorization: `Bearer ${user.accessToken}`,
     });
 
     return this.http

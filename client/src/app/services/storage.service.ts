@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class FirebaseService {
+export class StorageService {
   constructor(
     private http: HttpClient,
     private spotifyService: SpotifyService

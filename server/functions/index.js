@@ -24,7 +24,7 @@ const app = require('./api');
 exports.login = functions.https.onRequest(async (req, res) => {
     return cors(req, res, async () => {
         try {
-            if (!req.body.code) throw 'Incomplete request body';
+            if (!req.body.code) throw new Error('Incomplete request body');
 
             const params = new url.URLSearchParams({
                 grant_type: 'authorization_code',
@@ -33,22 +33,27 @@ exports.login = functions.https.onRequest(async (req, res) => {
             });
 
             //get spotify access token
-            const spotifyResult = await axios.post(
-                'https://accounts.spotify.com/api/token',
-                params.toString(),
-                {
-                    headers: {
-                        Authorization:
-                            'Basic ' +
-                            Buffer.from(
-                                config.spotifyClientId +
-                                    ':' +
-                                    config.spotifyClientSecret
-                            ).toString('base64'),
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                }
-            );
+            let spotifyResult;
+            try {
+                spotifyResult = await axios.post(
+                    'https://accounts.spotify.com/api/token',
+                    params.toString(),
+                    {
+                        headers: {
+                            Authorization:
+                                'Basic ' +
+                                Buffer.from(
+                                    config.spotifyClientId +
+                                        ':' +
+                                        config.spotifyClientSecret
+                                ).toString('base64'),
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                    }
+                );
+            } catch (error) {
+                throw new Error('Code already used');
+            }
 
             //get user profile
             const loggedUser = await getMe(spotifyResult.data.access_token);
@@ -64,31 +69,31 @@ exports.login = functions.https.onRequest(async (req, res) => {
                 { token: customToken, returnSecureToken: true }
             );
 
-            //TODO refresh tokens should be stored in database
             const dataToReturn = {
                 displayName: loggedUser.display_name,
                 id: loggedUser.id,
                 images: loggedUser.images,
-                spotifyAccessToken: spotifyResult.data.access_token,
+                //spotifyAccessToken: spotifyResult.data.access_token,
                 //spotifyRefreshToken: spotifyResult.data.refresh_token,
                 firebaseAccessToken: firebaseAuthResult.data.idToken,
-                //firebaseRefreshToken: firebaseAuthResult.data.refreshToken,
-                expiresIn: 3600,
+                firebaseRefreshToken: firebaseAuthResult.data.refreshToken,
+                expiresIn: 10 * 24 * 60 * 60, // token valid for  10 days
+                //expiresIn: 10 * 60, //10min
             };
 
+            //TODO refresh tokens should be stored in database
             await db.collection('tokens').doc(loggedUser.id).set({
                 spotifyAccessToken: spotifyResult.data.access_token,
+                spotifyRefreshToken: spotifyResult.data.refresh_token,
             });
 
             res.status(200).json(dataToReturn);
         } catch (error) {
-            functions.logger.log(error);
+            functions.logger.error(error);
             res.status(400).json({ error: error.message });
         }
     });
 });
-
-exports.api = functions.https.onRequest(app);
 
 const getMe = async (accessToken) => {
     const result = await axios.get('https://api.spotify.com/v1/me', {
@@ -100,3 +105,58 @@ const getMe = async (accessToken) => {
 
     return result.data;
 };
+
+exports.api = functions.https.onRequest(app);
+
+exports.refresh = functions.https.onRequest(async (req, res) => {
+    return cors(req, res, async () => {
+        try {
+            if (!req.body.uid && !req.body.refreshToken)
+                throw new Error('Incomplete request body');
+
+            const refreshResult = await axios.post(
+                `https://securetoken.googleapis.com/v1/token?key=${config.firebaseWebApiKey}`,
+                {
+                    grant_type: 'refresh_token',
+                    refresh_token: req.body.refreshToken,
+                }
+            );
+
+            if (!refreshResult) throw 'You have to log in again';
+
+            const doc = await db.collection('tokens').doc(req.body.uid).get();
+            if (!doc.exists) throw 'You have to log in again';
+
+            const params = new url.URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: doc.data().spotifyRefreshToken,
+            });
+            const spotifyResult = await axios.post(
+                `https://accounts.spotify.com/api/token`,
+                params.toString(),
+                {
+                    headers: {
+                        Authorization:
+                            'Basic ' +
+                            Buffer.from(
+                                config.spotifyClientId +
+                                    ':' +
+                                    config.spotifyClientSecret
+                            ).toString('base64'),
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+            await db.collection('tokens').doc(req.body.uid).update({
+                spotifyAccessToken: spotifyResult.data.access_token,
+            });
+
+            res.status(200).json({
+                firebaseAccessToken: refreshResult.data.access_token,
+            });
+        } catch (error) {
+            functions.logger.error(error);
+            res.status(400).json({ error: error.message });
+        }
+    });
+});
