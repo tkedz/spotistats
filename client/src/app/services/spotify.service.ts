@@ -9,11 +9,12 @@ export interface TrackResponse {
   artists: string[];
   name: string;
   preview_url: string;
-  played_at?: string;
+  // played_at?: string;
   popularity?: number;
   spotifyURL: string;
   spotifyURI: SafeUrl;
   image: string;
+  id: string;
 }
 
 export interface ArtistResponse {
@@ -24,6 +25,7 @@ export interface ArtistResponse {
   followers: number;
   spotifyURL: string;
   spotifyURI: SafeUrl;
+  id: string;
 }
 
 @Injectable({
@@ -46,20 +48,13 @@ export class SpotifyService {
       )
       .pipe(
         map((res) => {
-          console.log(res)
-          return res.items.map((item: any) => {
+          console.log(res);
+          return res.map((item:any) =>  {
             return {
-              artists: item.track.artists.map((artist: any) => {
-                return artist.name;
-              }),
-              name: item.track.name,
-              preview_url: item.track.preview_url,
-              played_at: item.played_at,
-              spotifyURL: item.track.external_urls.spotify,
-              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.track.uri),
-              image: item.track.album.images[0].url,
-            };
-          });
+              ...item,
+              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.spotifyURI)
+            }
+          })
         })
       );
   }
@@ -81,19 +76,12 @@ export class SpotifyService {
       )
       .pipe(
         map((res) => {
-          return res.items.map((item: any) => {
+          return res.map((item:any) =>  {
             return {
-              artists: item.artists.map((artist: any) => {
-                return artist.name;
-              }),
-              name: item.name,
-              preview_url: item.preview_url,
-              popularity: item.popularity,
-              spotifyURL: item.external_urls.spotify,
-              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.uri),
-              image: item.album.images[0].url,
-            };
-          });
+              ...item,
+              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.spotifyURI)
+            }
+          })
         })
       );
   }
@@ -115,17 +103,12 @@ export class SpotifyService {
       )
       .pipe(
         map((res) => {
-          return res.items.map((item: any) => {
+          return res.map((item:any) =>  {
             return {
-              name: item.name,
-              popularity: item.popularity,
-              image: item.images[0].url,
-              genres: item.genres,
-              followers: item.followers.total,
-              spotifyURL: item.external_urls.spotify,
-              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.uri),
-            };
-          });
+              ...item,
+              spotifyURI: this.sanitizer.bypassSecurityTrustUrl(item.spotifyURI)
+            }
+          })
         })
       );
   }
@@ -134,14 +117,34 @@ export class SpotifyService {
     what: string,
     user: User,
     timeRange: string
-  ):
-    | Observable<Array<ArtistResponse>>
-    | Observable<Array<TrackResponse>>
-    | Observable<any> {
+  ): Observable<Array<ArtistResponse>> | Observable<Array<TrackResponse>> | Observable<any> {
     if (what === 'artists') {
       return this.getFavArtists(user, timeRange);
     } else {
       return this.getFavTracks(user, timeRange);
     }
+  }
+
+  private iterateToAllowURI(obj: any) {
+    Object.keys(obj).forEach((key: string) => {
+
+    if(key === 'spotifyURI') obj[key] = this.sanitizer.bypassSecurityTrustUrl(obj[key]);
+
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+            this.iterateToAllowURI(obj[key])
+        }
+    })
+}
+
+  compare(user: User, comparedUser: string): Observable<any> {
+    const authHeader = new HttpHeaders({
+      Authorization: `Bearer ${user.accessToken}`,
+    });
+
+    return this.http.get<any>(
+      `http://localhost:5001/mgr-backend/us-central1/api/compare/${comparedUser}`, {headers: authHeader}
+    ).pipe(tap(res => {
+        this.iterateToAllowURI(res);
+    }));
   }
 }

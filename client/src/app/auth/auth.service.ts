@@ -82,8 +82,8 @@ export class AuthService {
         user._refreshToken,
         +user._expiration
       );
-
-      this.refresh(loggedUser)
+      this.user.next(loggedUser)
+      this.refresh(this.user.value);
     } 
   }
 

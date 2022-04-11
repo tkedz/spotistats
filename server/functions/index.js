@@ -82,10 +82,16 @@ exports.login = functions.https.onRequest(async (req, res) => {
             };
 
             //TODO refresh tokens should be stored in database
-            await db.collection('tokens').doc(loggedUser.id).set({
-                spotifyAccessToken: spotifyResult.data.access_token,
-                spotifyRefreshToken: spotifyResult.data.refresh_token,
-            });
+            await db
+                .collection('tokens')
+                .doc(loggedUser.id)
+                .set({
+                    spotifyAccessToken: spotifyResult.data.access_token,
+                    spotifyRefreshToken: spotifyResult.data.refresh_token,
+                    spotifyAccessExpiration: Math.floor(
+                        Date.now() / 1000 + spotifyResult.data.expires_in
+                    ),
+                });
 
             res.status(200).json(dataToReturn);
         } catch (error) {
@@ -147,9 +153,15 @@ exports.refresh = functions.https.onRequest(async (req, res) => {
                     },
                 }
             );
-            await db.collection('tokens').doc(req.body.uid).update({
-                spotifyAccessToken: spotifyResult.data.access_token,
-            });
+            await db
+                .collection('tokens')
+                .doc(req.body.uid)
+                .update({
+                    spotifyAccessToken: spotifyResult.data.access_token,
+                    spotifyAccessExpiration: Math.floor(
+                        Date.now() / 1000 + spotifyResult.data.expires_in
+                    ),
+                });
 
             res.status(200).json({
                 firebaseAccessToken: refreshResult.data.access_token,

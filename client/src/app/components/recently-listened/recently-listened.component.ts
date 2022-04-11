@@ -33,18 +33,18 @@ export class RecentlyListenedComponent implements OnInit, OnDestroy {
 
     this.onGetRecentlyPlayed();
   }
-  
-  
+
   onGetRecentlyPlayed(): void {
-    this.spotifyService
-    .getRecentlyPlayedTracks(this.user)
-    .subscribe((tracks) => {
-      this.tracks = tracks;
-      console.log(tracks);
-      this.isLoaded = true;
-    }, (err) => {
-      this.error = true;
-    })
+    this.spotifyService.getRecentlyPlayedTracks(this.user).subscribe(
+      (tracks) => {
+        this.tracks = tracks;
+        console.log(tracks);
+        this.isLoaded = true;
+      },
+      (err) => {
+        this.error = true;
+      }
+    );
   }
 
   ngOnDestroy(): void {

@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
+import { SpotifyService } from 'src/app/services/spotify.service';
 
 @Component({
   selector: 'app-compare',
@@ -15,18 +16,18 @@ export class CompareComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private spotifyService: SpotifyService
   ) {}
 
   ngOnInit(): void {
     this.authService.user.subscribe((user) => {
       this.user = user;
 
-      this.storageService
-        .fetchDataToCompare(this.user, this.route.snapshot.paramMap.get('id'))
-        .subscribe((res) => {
-          console.log(res);
-        });
     });
+    this.spotifyService.compare(this.user, this.route.snapshot.paramMap.get('id'))
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }
