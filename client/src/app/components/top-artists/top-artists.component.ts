@@ -7,6 +7,7 @@ import {
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-stats',
@@ -29,14 +30,15 @@ export class TopArtistsComponent implements OnInit {
   ngOnInit(): void {
     this.error = false;
 
-    this.userSub = this.authService.user.subscribe((user) => {
+    this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.user = user;
+      
+      this.route.queryParamMap.subscribe(params => {
+        const timeRange = params.get('timeRange');
+        this.onGetFavArtists(timeRange);
+      });
     });
 
-    this.route.queryParamMap.subscribe(params => {
-      const timeRange = params.get('timeRange');
-      this.onGetFavArtists(timeRange);
-    });
   }
 
   onGetFavArtists(timeRange: string) {

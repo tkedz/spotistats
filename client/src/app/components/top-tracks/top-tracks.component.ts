@@ -7,6 +7,7 @@ import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-top-tracks',
@@ -29,14 +30,14 @@ export class TopTracksComponent implements OnInit {
   ngOnInit(): void {
     this.error = false;
 
-    this.userSub = this.authService.user.subscribe((user) => {
+    this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.user = user;
+      this.route.queryParamMap.subscribe(params => {
+        const timeRange = params.get('timeRange');
+        this.onGetFavTracks(timeRange);
+      });
     });
 
-    this.route.queryParamMap.subscribe(params => {
-      const timeRange = params.get('timeRange');
-      this.onGetFavTracks(timeRange);
-    });
   }
 
   onGetFavTracks(timeRange: string) {
@@ -45,7 +46,7 @@ export class TopTracksComponent implements OnInit {
       (res) => {
         console.log(res);
         this.top3tracks = res.slice(0, 3);
-        this.tracks = res.slice(3);
+        this.tracks = res;
       },
       (err) => {this.error = true;}
     );

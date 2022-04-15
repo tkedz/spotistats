@@ -83,7 +83,7 @@ exports.login = functions.https.onRequest(async (req, res) => {
 
             //TODO refresh tokens should be stored in database
             await db
-                .collection('tokens')
+                .collection('users')
                 .doc(loggedUser.id)
                 .set({
                     spotifyAccessToken: spotifyResult.data.access_token,
@@ -91,6 +91,7 @@ exports.login = functions.https.onRequest(async (req, res) => {
                     spotifyAccessExpiration: Math.floor(
                         Date.now() / 1000 + spotifyResult.data.expires_in
                     ),
+                    avatar: loggedUser.images[0].url,
                 });
 
             res.status(200).json(dataToReturn);
@@ -130,7 +131,7 @@ exports.refresh = functions.https.onRequest(async (req, res) => {
 
             if (!refreshResult) throw 'You have to log in again';
 
-            const doc = await db.collection('tokens').doc(req.body.uid).get();
+            const doc = await db.collection('users').doc(req.body.uid).get();
             if (!doc.exists) throw 'You have to log in again';
 
             const params = new url.URLSearchParams({
@@ -154,7 +155,7 @@ exports.refresh = functions.https.onRequest(async (req, res) => {
                 }
             );
             await db
-                .collection('tokens')
+                .collection('users')
                 .doc(req.body.uid)
                 .update({
                     spotifyAccessToken: spotifyResult.data.access_token,

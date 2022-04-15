@@ -1,24 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-/* .center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.word-wrap {
-  overflow-wrap: break-word;
-}
-
-.medal {
-  font-size: 128px;
-}
-
-@media only screen and (min-width: 1px) and (max-width: 1215px) {
-  .medal {
-    font-size: 64px;
-  }
-} */
-
 /* https://coolors.co/6f2dbd-a663cc-b298dc-b8d0eb-b9faf8 */
 
 /* NEW */
@@ -38,6 +18,8 @@
   --color-grey-dark-1: #333;
   --color-grey-dark-2: #777;
   --color-grey-dark-3: #999;
+
+  --color-black: #000;
 }
 
 * {
@@ -53,7 +35,6 @@
 
 html {
   box-sizing: border-box;
-  /* font-size: 62.5%; */
   font-size: 62.5%;
 }
 
@@ -102,10 +83,16 @@ section::before {
   text-transform: uppercase;
 }
 
-.heading-1 {
-  font-size: 8rem;
+.heading-2 {
+  font-size: 3rem;
   font-weight: 800;
-  color: var(--color-grey-light-1);
+  color: var(--color-black);
+}
+
+.heading-1 {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--color-black);
   text-transform: uppercase;
 }
 
@@ -113,4 +100,68 @@ section::before {
   display: block;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex {
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.center-self {
+  align-self: center;
+}
+
+/* PROFILE & COMPARE CSS */
+.profile__photo {
+  display: block;
+  width: 14rem;
+  height: 14rem;
+}
+
+.profile__photo--border-1 {
+  padding: 1rem;
+  border: 5px solid var(--color-secondary);
+  border-radius: 50%;
+}
+
+.profile__photo--border-2 {
+  padding: 1rem;
+  border: 5px solid var(--color-primary-dark);
+  border-radius: 50%;
+}
+
+.nav {
+  margin-top: 2rem;
+}
+
+.nav__content {
+  display: flex;
+  align-items: flex-start;
+  list-style-type: none;
+}
+
+.nav__item {
+  width: 15rem;
+  padding: 1rem 0;
+  margin-right: 1rem;
+  background-color: var(--color-secondary);
+  text-align: center;
+
+  font-size: 1.6rem;
+}
+
+.nav__item:hover{
+cursor: pointer;
+background-color: var(--color-tertiary);
+}
+
+.is-active {
+background-color: var(--color-tertiary);
 }

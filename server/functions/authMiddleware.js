@@ -57,7 +57,7 @@ const validateFirebaseIdToken = async (req, res, next) => {
 
 const getSpotifyAccessToken = async (uid) => {
     console.log(uid);
-    const doc = await db.collection('tokens').doc(uid).get();
+    const doc = await db.collection('users').doc(uid).get();
     console.log(doc.data());
     if (!doc.exists) return null;
 

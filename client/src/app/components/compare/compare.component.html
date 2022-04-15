@@ -1,1 +1,145 @@
-<p>compare works!</p>
+<section class="compare">
+    <div class="loading" *ngIf="!compareData">Loading...</div>
+    <div class="compare__wrapper" *ngIf="user && compareData">
+        <div class="profiles__wrapper heading-1 center">
+            <img [src]="user.img" alt="" class="profile__photo profile__photo--border-1" style="margin: 0 12px;">
+            <span>{{user.displayName}} 🆚 {{comparedUserName}}</span>
+            <img [src]="user.img" alt="" class="profile__photo profile__photo--border-2" style="margin: 0 12px;">
+        </div>
+        <nav class="nav">
+            <ul class="nav__content center">
+                <li #shortTermBtn class="nav__item" (click)="show('short')">ostatni miesiąc</li>
+                <li #mediumTermBtn class="nav__item" (click)="show('medium')">ostatnie pół roku</li>
+                <li #longTermBtn class="nav__item" (click)="show('long')">dłuższy czas</li>
+            </ul>
+        </nav>
+        <div class="category center">
+            <div class="category__name heading-2">Ulubieni artyści</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let artist of displayData[user.displayName].topArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let artist of displayData[comparedUserName].topArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Ulubione utwory</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let track of displayData[user.displayName].topTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let track of displayData[comparedUserName].topTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Najpopularniejsi artyści wśród słuchanych</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let artist of displayData[user.displayName].mostPopularArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let artist of displayData[comparedUserName].mostPopularArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Najmniej popularni artyści wsród słuchanych</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let artist of displayData[user.displayName].leastPopularArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let artist of displayData[comparedUserName].leastPopularArtists">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Najpopularniejsze utwory wśród słuchanych</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let track of displayData[user.displayName].mostPopularTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let track of displayData[comparedUserName].mostPopularTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Najmniej popularne utwory wśród słuchanych</div>
+            <div class="flex">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let track of displayData[user.displayName].leastPopularTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let track of displayData[comparedUserName].leastPopularTracks">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Ulubione gatunki</div>
+            <div class="flex" style="flex-shrink: 0;">
+                <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
+                <div *ngFor="let genre of displayData[user.displayName].favGenres" class="genre genre-1">
+                    {{genre}}
+                </div>
+            </div>
+            <div class="flex">
+                <div *ngFor="let genre of displayData[comparedUserName].favGenres" class="genre">
+                    {{genre}}
+                </div>
+                <img [src]="compareData.comparedUserAvatar" alt=""
+                    class="profile__photo center-self  profile__photo--border-2">
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Artyści, którzy was łączą</div>
+            <div class="flex center">
+                <div *ngFor="let artist of displayData.artistsIntersection">
+                    <app-card [artist]="artist" id="rest"></app-card>
+                </div>
+            </div>
+        </div>
+        <div class="category center">
+            <div class="category__name heading-2">Utwory, które was łączą</div>
+            <div class="flex center">
+                <div *ngFor="let track of displayData.tracksIntersection">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

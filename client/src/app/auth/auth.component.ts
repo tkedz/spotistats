@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
@@ -16,16 +17,15 @@ export class AuthComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe((user) => {
+    this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.isLogged = user ? true : false;
       console.log(this.isLogged);
+      if (!this.isLogged) {
+        setTimeout(() => {
+          this.authService.loginRedirect();
+        }, 3000);
+      }
     });
-
-    if (!this.isLogged) {
-      setTimeout(() => {
-        this.authService.loginRedirect();
-      }, 3000);
-    }
   }
 
   ngOnDestroy(): void {

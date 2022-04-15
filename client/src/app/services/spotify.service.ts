@@ -28,6 +28,35 @@ export interface ArtistResponse {
   id: string;
 }
 
+interface PartialCompare {
+  topArtists: Array<ArtistResponse>,
+  topTracks: Array<TrackResponse>,
+  favGenres: Array<string>,
+  mostPopularArtists: Array<ArtistResponse>,
+  leastPopularArtists: Array<ArtistResponse>,
+  mostPopularTracks: Array<TrackResponse>,
+  leastPopularTracks: Array<TrackResponse>
+}
+
+export interface CompareResponse {
+  short: {
+    [key: string]: PartialCompare | any[],
+    artistsIntersection: Array<ArtistResponse>,
+    tracksIntersection: Array<TrackResponse>,
+  },
+  medium: {
+    [key: string]: PartialCompare | any[],
+    artistsIntersection: Array<ArtistResponse>,
+    tracksIntersection: Array<TrackResponse>,
+  },
+  long: {
+    [key: string]: PartialCompare | any[],
+    artistsIntersection: Array<ArtistResponse>,
+    tracksIntersection: Array<TrackResponse>,
+  },
+  comparedUserAvatar: string
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -136,12 +165,12 @@ export class SpotifyService {
     })
 }
 
-  compare(user: User, comparedUser: string): Observable<any> {
+  compare(user: User, comparedUser: string): Observable<CompareResponse> {
     const authHeader = new HttpHeaders({
       Authorization: `Bearer ${user.accessToken}`,
     });
 
-    return this.http.get<any>(
+    return this.http.get<CompareResponse>(
       `http://localhost:5001/mgr-backend/us-central1/api/compare/${comparedUser}`, {headers: authHeader}
     ).pipe(tap(res => {
         this.iterateToAllowURI(res);

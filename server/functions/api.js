@@ -79,11 +79,12 @@ app.get(
             const comparedUser = req.params.comparedUser;
 
             //get comparedUser spotify access token
-            const doc = await db.collection('tokens').doc(comparedUser).get();
+            const doc = await db.collection('users').doc(comparedUser).get();
             if (!doc.exists)
                 throw new Error(`User ${comparedUser} does not exist`);
 
             let token;
+            const avatar = doc.data().avatar;
             //check if current token is still valid
             if (doc.data().spotifyAccessExpiration < Date.now() / 1000) {
                 token = doc.data().spotifyAccessToken;
@@ -111,7 +112,7 @@ app.get(
                 );
 
                 await db
-                    .collection('tokens')
+                    .collection('users')
                     .doc(comparedUser)
                     .update({
                         spotifyAccessToken: spotifyResult.data.access_token,
@@ -141,6 +142,7 @@ app.get(
 
             const responses = await axios.all(requests);
             const dataToSend = prepareStats(responses, uid, comparedUser);
+            dataToSend.comparedUserAvatar = avatar;
             res.status(200).json(dataToSend);
         } catch (error) {
             console.log(error);

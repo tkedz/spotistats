@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import {
   SpotifyService,
   TrackResponse,
@@ -27,11 +28,11 @@ export class RecentlyListenedComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.error = false;
 
-    this.userSub = this.authService.user.subscribe((user) => {
+    this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.user = user;
+      this.onGetRecentlyPlayed();
     });
 
-    this.onGetRecentlyPlayed();
   }
 
   onGetRecentlyPlayed(): void {
