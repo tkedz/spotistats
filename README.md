@@ -19,7 +19,7 @@ Additionally the application will be extended with a simple music recommendation
 
 ## Screenshots
 
-Comparision
+Comparision (app is not public so I'm comparing myself to myself while testing)
 [![spotistats2.png](https://i.postimg.cc/yYFFsQ4v/spotistats2.png)](https://postimg.cc/JGzyQQhk)
 
 User profile
