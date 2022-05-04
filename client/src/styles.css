@@ -46,11 +46,12 @@ body {
   min-height: 99.99999vh;
   font-size: 1.4rem;
 
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to right,
     rgba(111, 45, 189, 0.8),
     rgba(178, 152, 220, 0.8)
-  );
+  ); */
+  background-color: #111111 ;
 }
 
 section::before {
@@ -86,13 +87,15 @@ section::before {
 .heading-2 {
   font-size: 3rem;
   font-weight: 800;
-  color: var(--color-black);
+  color: var(--color-grey-light-2);
+  /* color: var(--color-black); */
 }
 
 .heading-1 {
   font-size: 4rem;
   font-weight: 800;
-  color: var(--color-black);
+  color: var(--color-grey-light-2);
+  /* color: var(--color-black); */
   text-transform: uppercase;
 }
 
