@@ -14,7 +14,9 @@ import { ComparisionProfileComponent } from './components/comparision-profile/co
 import { CompareComponent } from './components/compare/compare.component';
 import { TopTracksComponent } from './components/top-tracks/top-tracks.component';
 import { CardComponent } from './components/card/card.component';
+import { RecommendationsComponent } from './components/recommendations/recommendations.component';
 import { RemoveParenthesis } from './pipes/remove-parenthesis.pipe';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -29,9 +31,10 @@ import { RemoveParenthesis } from './pipes/remove-parenthesis.pipe';
     CompareComponent,
     TopTracksComponent,
     CardComponent,
+    RecommendationsComponent,
     RemoveParenthesis,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

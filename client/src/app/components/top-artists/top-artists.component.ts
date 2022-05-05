@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import {
   SpotifyService,
@@ -14,7 +14,7 @@ import { take } from 'rxjs/operators';
   templateUrl: './top-artists.component.html',
   styleUrls: ['./top-artists.component.css'],
 })
-export class TopArtistsComponent implements OnInit {
+export class TopArtistsComponent implements OnInit, OnDestroy {
   user: User = null;
   userSub: Subscription;
   top3artists: Array<ArtistResponse> = [];

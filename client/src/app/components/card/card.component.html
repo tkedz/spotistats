@@ -44,7 +44,7 @@
             <div>
                 <ng-container *ngFor="let artist of track.artists; let i = index">
                     <span class="heading-4" *ngIf="i < 6">{{artist}}</span>
-                    <span *ngIf="i < track.artists.length - 1">, </span>
+                    <span class="heading-4" *ngIf="i < track.artists.length - 1">, </span>
                 </ng-container>
             </div>
         </div>

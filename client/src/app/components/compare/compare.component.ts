@@ -1,21 +1,23 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { CompareResponse, SpotifyService } from 'src/app/services/spotify.service';
 import { take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-compare',
   templateUrl: './compare.component.html',
   styleUrls: ['./compare.component.css'],
 })
-export class CompareComponent implements OnInit {
+export class CompareComponent implements OnInit, OnDestroy {
   @ViewChild('shortTermBtn') shortTermBtn: ElementRef;
   @ViewChild('mediumTermBtn') mediumTermBtn: ElementRef; 
   @ViewChild('longTermBtn') longTermBtn: ElementRef; 
   user: User;
+  userSub: Subscription;
   comparedUserName: string
   compareData: CompareResponse;
   displayData: any;
@@ -28,7 +30,7 @@ export class CompareComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.user.pipe(take(1)).subscribe((user) => {
+    this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.user = user;
       this.comparedUserName = this.route.snapshot.paramMap.get('id');
 
@@ -66,5 +68,9 @@ export class CompareComponent implements OnInit {
       default:
         break;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe();
   }
 }

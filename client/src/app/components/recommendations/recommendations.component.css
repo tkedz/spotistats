@@ -1,0 +1,11 @@
+.recommendations__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-grey-light-2);
+}
+
+.cover {
+    width: 10rem;
+    height: auto;
+}

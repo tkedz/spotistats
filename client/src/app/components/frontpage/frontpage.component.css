@@ -1,10 +1,10 @@
 .frontpage {
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
       to right,
       rgba(111, 45, 189, 0.8),
       rgba(178, 152, 220, 0.8)
     );
-  background-size: cover;
+  background-size: cover; */
   height: 100vh;
 
   position: relative;

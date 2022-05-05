@@ -28,6 +28,15 @@ export interface ArtistResponse {
   id: string;
 }
 
+export interface AlbumResponse {
+  name: string,
+  artists: Array<string>
+  image: string,
+  spotifyURL: string,
+  spotifyURI: SafeUrl,
+  id: string,
+}
+
 interface PartialCompare {
   topArtists: Array<ArtistResponse>,
   topTracks: Array<TrackResponse>,
@@ -55,6 +64,11 @@ export interface CompareResponse {
     tracksIntersection: Array<TrackResponse>,
   },
   comparedUserAvatar: string
+}
+
+export interface SearchResponse {
+  albums: Array<AlbumResponse>,
+  tracks: Array<TrackResponse>
 }
 
 @Injectable({
@@ -163,7 +177,7 @@ export class SpotifyService {
             this.iterateToAllowURI(obj[key])
         }
     })
-}
+  }
 
   compare(user: User, comparedUser: string): Observable<CompareResponse> {
     const authHeader = new HttpHeaders({
@@ -174,6 +188,18 @@ export class SpotifyService {
       `http://localhost:5001/mgr-backend/us-central1/api/compare/${comparedUser}`, {headers: authHeader}
     ).pipe(tap(res => {
         this.iterateToAllowURI(res);
+    }));
+  }
+
+  search(user: User, query: string): Observable<SearchResponse> {
+    const authHeader = new HttpHeaders({
+      Authorization: `Bearer ${user.accessToken}`,
+    });
+
+    return this.http.get<SearchResponse>(
+      `http://localhost:5001/mgr-backend/us-central1/api/search?q=${query}`, {headers: authHeader}
+    ).pipe(tap(res => {
+        this.iterateToAllowURI(res)
     }));
   }
 }

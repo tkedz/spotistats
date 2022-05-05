@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   TrackResponse,
   SpotifyService,
@@ -14,7 +14,7 @@ import { take } from 'rxjs/operators';
   templateUrl: './top-tracks.component.html',
   styleUrls: ['./top-tracks.component.css'],
 })
-export class TopTracksComponent implements OnInit {
+export class TopTracksComponent implements OnInit, OnDestroy {
   user: User = null;
   userSub: Subscription;
   top3tracks: Array<TrackResponse> = [];

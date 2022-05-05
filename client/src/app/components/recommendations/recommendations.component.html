@@ -1,0 +1,35 @@
+<section class="recommendations">
+    <div class="recommendations__wrapper">
+        <div class="heading-2">Wyszukuj lubiane utwory i albumy, a na ich podstawie coś Ci zarekomendujemy 🤖</div>
+
+        <div>
+            <input type="text" [(ngModel)]="searchValue" (keydown.enter)="onSearch()">
+            <button (click)="onSearch()">🔎</button>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-around;">
+            <div *ngFor="let album of albums; let i = index" style="display: flex; flex-direction: row; gap: .3rem">
+                <img class="cover" [src]="album.image">
+                <div
+                    style="display: flex; flex-direction: column; background-color: var(--color-secondary); width: 25rem;">
+                    <span class="heading-3">{{album.name}}</span>
+                    <div>
+                        <ng-container *ngFor="let artist of album.artists; let j = index">
+                            <span class="heading-4" *ngIf="j < 6">{{artist}}</span>
+                            <span class="heading-4" *ngIf="j < album.artists.length - 1">, </span>
+                        </ng-container>
+                    </div>
+                    <button style="margin-top: auto;" (click)="addToPool(i, 'album')">➕</button>
+                </div>
+            </div>
+
+            <!-- <div *ngFor="let track of tracks">
+                <img [src]="track.image">
+                <div>
+                    <span>{{track.name}}</span>
+                    <span>{{track.artists}}</span>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</section>

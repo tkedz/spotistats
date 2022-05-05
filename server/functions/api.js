@@ -151,6 +151,32 @@ app.get(
     }
 );
 
+app.get('/search', validateFirebaseIdToken, async (req, res) => {
+    try {
+        const q = req.query.q;
+        if (!q) throw new Error('Search query is empty');
+
+        const result = await axios.get(
+            `https://api.spotify.com/v1/search?q=${q}&type=track,album`,
+            {
+                headers: { Authorization: `Bearer ${req.spotifyAccessToken}` },
+            }
+        );
+
+        const tracks = _.chain(result.data.tracks.items).map(mapTracks).value();
+
+        const albums = _.chain(result.data.albums.items)
+            .filter(['album_type', 'album'])
+            .map(mapAlbums)
+            .value();
+
+        res.status(200).json({ albums, tracks });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
 module.exports = app;
 
 //utils functions -> move to another file
@@ -200,6 +226,19 @@ const mapArtists = (item) => {
         image: item.images[0].url,
         genres: item.genres,
         followers: item.followers.total,
+        spotifyURL: item.external_urls.spotify,
+        spotifyURI: item.uri,
+        id: item.id,
+    };
+};
+
+const mapAlbums = (item) => {
+    return {
+        name: item.name,
+        artists: item.artists.map((artist) => {
+            return artist.name;
+        }),
+        image: item.images[0].url,
         spotifyURL: item.external_urls.spotify,
         spotifyURI: item.uri,
         id: item.id,

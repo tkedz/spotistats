@@ -9,6 +9,7 @@ import { TopArtistsComponent } from './components/top-artists/top-artists.compon
 import { ComparisionProfileComponent } from './components/comparision-profile/comparision-profile.component';
 import { CompareComponent } from './components/compare/compare.component';
 import { TopTracksComponent } from './components/top-tracks/top-tracks.component';
+import { RecommendationsComponent } from './components/recommendations/recommendations.component';
 
 const routes: Routes = [
   { path: '', component: FrontpageComponent, pathMatch: 'full' },
@@ -27,6 +28,10 @@ const routes: Routes = [
     path: 'compare/:id',
     component: CompareComponent,
   },
+  {
+    path: 'recommendations',
+    component: RecommendationsComponent
+  }
 ];
 
 @NgModule({
