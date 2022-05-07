@@ -157,7 +157,7 @@ app.get('/search', validateFirebaseIdToken, async (req, res) => {
         if (!q) throw new Error('Search query is empty');
 
         const result = await axios.get(
-            `https://api.spotify.com/v1/search?q=${q}&type=track,album`,
+            `https://api.spotify.com/v1/search?q=${q}&type=track,album&limit=10`,
             {
                 headers: { Authorization: `Bearer ${req.spotifyAccessToken}` },
             }
@@ -171,6 +171,57 @@ app.get('/search', validateFirebaseIdToken, async (req, res) => {
             .value();
 
         res.status(200).json({ albums, tracks });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
+app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
+    try {
+        let seedTracks = [];
+        //req.body contains tracks and albums on the basis of which recommendations will be generated
+        for (const item of req.body) {
+            //console.log('ITEM', item);
+            if (item.type === 'album') {
+                //get all albums tracks
+                const result = await axios.get(
+                    `https://api.spotify.com/v1/albums/${item.data.id}/tracks`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${req.spotifyAccessToken}`,
+                        },
+                    }
+                );
+
+                //console.log('WTF', result.data.items, 'WTF');
+                const albumTracks = _.map(result.data.items, (t) => t.id);
+                seedTracks = _.concat(seedTracks, albumTracks);
+            } else seedTracks.push(item.data.id);
+        }
+
+        seedTracks = _.uniq(seedTracks);
+
+        //get audio features of tracks
+        //spotify allows to get featurs for max 100 tracks in one request, so we split in chunks
+        let audioFeatures = [];
+        const chunks = _.chunk(seedTracks, 100);
+        for (const chunk of chunks) {
+            const ids = _.join(chunk, ',');
+            const result = await axios.get(
+                `https://api.spotify.com/v1/audio-features?ids=${ids}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${req.spotifyAccessToken}`,
+                    },
+                }
+            );
+
+            console.log(result.data);
+            audioFeatures = _.concat(audioFeatures, result.data.audio_features);
+        }
+
+        res.status(200).json(audioFeatures);
     } catch (error) {
         console.log(error);
         res.status(400).json({ error: error.message });

@@ -17,7 +17,6 @@ import { take } from 'rxjs/operators';
 export class TopTracksComponent implements OnInit, OnDestroy {
   user: User = null;
   userSub: Subscription;
-  top3tracks: Array<TrackResponse> = [];
   tracks: Array<TrackResponse> = [];
   error: boolean = false;
 
@@ -45,7 +44,6 @@ export class TopTracksComponent implements OnInit, OnDestroy {
     this.spotifyService.getFavourite('tracks', this.user, timeRange).subscribe(
       (res) => {
         console.log(res);
-        this.top3tracks = res.slice(0, 3);
         this.tracks = res;
       },
       (err) => {this.error = true;}

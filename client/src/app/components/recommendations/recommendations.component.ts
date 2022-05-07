@@ -2,12 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, take } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
-import { AlbumResponse, SpotifyService, TrackResponse } from 'src/app/services/spotify.service';
+import { RecommendationsService } from 'src/app/services/recommendations.service';
+import {
+  AlbumResponse,
+  SpotifyService,
+  TrackResponse,
+} from 'src/app/services/spotify.service';
 
 @Component({
   selector: 'app-recommendations',
   templateUrl: './recommendations.component.html',
-  styleUrls: ['./recommendations.component.css']
+  styleUrls: ['./recommendations.component.css'],
 })
 export class RecommendationsComponent implements OnInit, OnDestroy {
   user: User = null;
@@ -16,8 +21,12 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   albums: Array<AlbumResponse> = [];
   tracks: Array<TrackResponse> = [];
   selected: Array<any> = [];
-  
-  constructor(private authService: AuthService, private spotifyService: SpotifyService) { }
+
+  constructor(
+    private authService: AuthService,
+    private spotifyService: SpotifyService,
+    private recommendationsService: RecommendationsService
+  ) {}
 
   ngOnInit(): void {
     this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
@@ -32,8 +41,8 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   onSearch(): void {
     this.spotifyService.search(this.user, this.searchValue).subscribe(
       (res) => {
-        this.albums = res.albums
-        this.tracks = res.tracks
+        this.albums = res.albums;
+        this.tracks = res.tracks;
         console.log(this.albums, this.tracks);
       },
       (err) => {
@@ -42,10 +51,29 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
     );
   }
 
-  addToPool(index: number, type: string): void {
-    const data = type === 'album' ? this.albums[index] : this.tracks[index]
-    this.selected.push({type, data})
+  addToSet(index: number, type: string): void {
+    const data = type === 'album' ? this.albums[index] : this.tracks[index];
+    //check if item is already in set
+    if (!this.selected.some((o) => o.data.id === data.id)) {
+      this.selected.push({ type, data });
+    }
     console.log(this.selected);
   }
 
+  deleteFromSet(index: number): void {
+    this.selected.splice(index, 1);
+  }
+
+  onGetRecommendations(): void {
+    this.recommendationsService
+      .getRecommendations(this.user, this.selected)
+      .subscribe(
+        (tracks) => {
+          console.log(tracks);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
 }

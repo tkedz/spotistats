@@ -49,9 +49,19 @@
 
 .button--login {
   background-color: var(--color-secondary);
+  transition: background-color .5s ease;
+}
+
+.button--login:hover {
+  background-color: var(--color-tertiary);
 }
 
 .button--logout {
   background-color: #bf0603;
   color: var(--color-grey-light-1);
+  transition: background-color .5s ease;
+}
+
+.button--logout:hover {
+  background-color: #f10804;
 }

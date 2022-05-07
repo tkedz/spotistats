@@ -1,35 +1,74 @@
 <section class="recommendations">
-    <div class="recommendations__wrapper">
-        <div class="heading-2">Wyszukuj lubiane utwory i albumy, a na ich podstawie coś Ci zarekomendujemy 🤖</div>
+    <div class="container">
+        <div class="recommendations__wrapper">
+            <div class="heading-2">Dodawaj albumy i utwory do zbioru, a na jego podstawie coś ci zarekomendujemy 🤖
+            </div>
 
-        <div>
-            <input type="text" [(ngModel)]="searchValue" (keydown.enter)="onSearch()">
-            <button (click)="onSearch()">🔎</button>
-        </div>
+            <div class="search__box">
+                <input class="search__input" type="text" [(ngModel)]="searchValue" (keydown.enter)="onSearch()">
+                <button class="search__button" (click)="onSearch()">🔎</button>
+            </div>
 
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-around;">
-            <div *ngFor="let album of albums; let i = index" style="display: flex; flex-direction: row; gap: .3rem">
-                <img class="cover" [src]="album.image">
-                <div
-                    style="display: flex; flex-direction: column; background-color: var(--color-secondary); width: 25rem;">
-                    <span class="heading-3">{{album.name}}</span>
-                    <div>
-                        <ng-container *ngFor="let artist of album.artists; let j = index">
-                            <span class="heading-4" *ngIf="j < 6">{{artist}}</span>
-                            <span class="heading-4" *ngIf="j < album.artists.length - 1">, </span>
-                        </ng-container>
+            <div class="search__results">
+                <div *ngFor="let album of albums; let i = index" class="item">
+                    <img class="item--cover" [src]="album.image">
+                    <div class="item--info">
+                        <span class="heading-3 item--info-name">
+                            {{ (album.name.length>20) ? (album.name | slice:0:20)+'...':(album.name) }}</span>
+                        <div>
+                            <ng-container *ngFor="let artist of album.artists; let j = index">
+                                <span class="heading-4 item--info-artist" *ngIf="j < 6">{{artist}}</span>
+                                <span class="heading-4 item--info-artist" *ngIf="j < album.artists.length - 1">,
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="item--type">Album</div>
+                        <button class="button item--button" (click)="addToSet(i, 'album')">Dodaj</button>
                     </div>
-                    <button style="margin-top: auto;" (click)="addToPool(i, 'album')">➕</button>
+                </div>
+
+                <div *ngFor="let track of tracks; let i = index" class="item">
+                    <img class="item--cover" [src]="track.image">
+                    <div class="item--info">
+                        <span class="heading-3 item--info-name">
+                            {{ (track.name.length>20) ? (track.name | slice:0:20)+'...':(track.name) }}</span>
+                        <div>
+                            <ng-container *ngFor="let artist of track.artists; let j = index">
+                                <span class="heading-4 item--info-artist" *ngIf="j < 6">{{artist}}</span>
+                                <span class="heading-4 item--info-artist" *ngIf="j < track.artists.length - 1">,
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="item--type">Utwór</div>
+                        <button class="button item--button" (click)="addToSet(i, 'track')">Dodaj</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- <div *ngFor="let track of tracks">
-                <img [src]="track.image">
-                <div>
-                    <span>{{track.name}}</span>
-                    <span>{{track.artists}}</span>
+            <div class="heading-2" *ngIf="selected.length">Twój zbiór 👇
+            </div>
+            <button class="button " *ngIf="selected.length" (click)="onGetRecommendations()">Generuj
+                rekomendacje</button>
+
+            <div class="selected">
+                <div *ngFor="let item of selected; let i = index" class="item">
+                    <img class="item--cover" [src]="item.data.image">
+                    <div class="item--info">
+                        <span class="heading-3 item--info-name">
+                            {{ (item.data.name.length>20) ? (item.data.name | slice:0:20)+'...':(item.data.name)
+                            }}</span>
+                        <div>
+                            <ng-container *ngFor="let artist of item.data.artists; let j = index">
+                                <span class="heading-4 item--info-artist" *ngIf="j < 6">{{artist}}</span>
+                                <span class="heading-4 item--info-artist" *ngIf="j < item.data.artists.length - 1">,
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="item--type">{{item.type === 'track' ? 'Utwór' : 'Album'}}</div>
+                        <button class="button item--button red" (click)="deleteFromSet(i)">Usuń</button>
+                    </div>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
 </section>
