@@ -8,8 +8,7 @@ export class User {
   constructor(
     public displayName: string,
     public id: string,
-    private images: Image[],
-    //private _spotifyToken: string,
+    private images: Array<Image>,
     private _accessToken: string,
     private _refreshToken:string,
     private _expiration: number

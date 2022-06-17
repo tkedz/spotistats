@@ -1,7 +1,7 @@
 <section class="recommendations">
     <div class="container">
         <div class="recommendations__wrapper">
-            <div class="heading-2">Dodawaj albumy i utwory do zbioru, a na jego podstawie coś ci zarekomendujemy 🤖
+            <div class="heading-2">Dodawaj albumy i utwory do zbioru, a na jego podstawie coś Ci zarekomendujemy 🤖
             </div>
 
             <div class="search__box">
@@ -22,6 +22,8 @@
                                 </span>
                             </ng-container>
                         </div>
+                    </div>
+                    <div class="item--info-2">
                         <div class="item--type">Album</div>
                         <button class="button item--button" (click)="addToSet(i, 'album')">Dodaj</button>
                     </div>
@@ -39,6 +41,8 @@
                                 </span>
                             </ng-container>
                         </div>
+                    </div>
+                    <div class="item--info-2">
                         <div class="item--type">Utwór</div>
                         <button class="button item--button" (click)="addToSet(i, 'track')">Dodaj</button>
                     </div>
@@ -48,6 +52,8 @@
             <div class="heading-2" *ngIf="selected.length">Twój zbiór 👇
             </div>
             <button class="button " *ngIf="selected.length" (click)="onGetRecommendations()">Generuj
+                rekomendacje</button>
+            <button class="button " *ngIf="recommendations.length" (click)="displayRecommendations()">Wyświetl
                 rekomendacje</button>
 
             <div class="selected">
@@ -64,6 +70,8 @@
                                 </span>
                             </ng-container>
                         </div>
+                    </div>
+                    <div class="item--info-2">
                         <div class="item--type">{{item.type === 'track' ? 'Utwór' : 'Album'}}</div>
                         <button class="button item--button red" (click)="deleteFromSet(i)">Usuń</button>
                     </div>
@@ -71,4 +79,19 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" *ngIf="displayModal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" (click)="hideRecommendations()">&times;</span>
+            <div class="flex center">
+                <div *ngFor="let track of recommendations">
+                    <app-card [track]="track" id="rest"></app-card>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </section>

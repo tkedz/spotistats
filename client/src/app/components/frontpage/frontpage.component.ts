@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/auth/auth.service';
   styleUrls: ['./frontpage.component.css'],
 })
 export class FrontpageComponent implements OnInit {
+  title: string = 'Some title'
+
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService

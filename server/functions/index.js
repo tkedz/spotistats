@@ -11,15 +11,13 @@ const config = require('../config/config');
 const serviceAccount = require('../config/serviceAccount.json');
 
 const admin = require('firebase-admin');
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: config.firebaseStorageUrl,
+});
 const db = getFirestore();
 
 const app = require('./api');
-// exports.redirect = functions.https.onRequest((req, res) => {
-//     res.redirect(
-//         `https://accounts.spotify.com/authorize?client_id=${config.spotifyClientId}&response_type=code&redirect_uri=${config.spotifyRedirectUri}&scope=user-top-read,user-read-recently-played`
-//     );
-// });
 
 exports.login = functions.https.onRequest(async (req, res) => {
     return cors(req, res, async () => {
@@ -73,8 +71,6 @@ exports.login = functions.https.onRequest(async (req, res) => {
                 displayName: loggedUser.display_name,
                 id: loggedUser.id,
                 images: loggedUser.images,
-                //spotifyAccessToken: spotifyResult.data.access_token,
-                //spotifyRefreshToken: spotifyResult.data.refresh_token,
                 firebaseAccessToken: firebaseAuthResult.data.idToken,
                 firebaseRefreshToken: firebaseAuthResult.data.refreshToken,
                 expiresIn: 10 * 24 * 60 * 60, // token valid for  10 days

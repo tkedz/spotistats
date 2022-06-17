@@ -13,7 +13,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  login(code: string) {
+  login(code: string): void {
     this.http
       .post<any>('http://localhost:5001/mgr-backend/us-central1/login', {
         code,

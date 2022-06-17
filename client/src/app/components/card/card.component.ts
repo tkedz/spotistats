@@ -24,5 +24,5 @@ export class CardComponent implements OnInit, AfterViewInit {
     const border = this.cardNameDiv.nativeElement.offsetHeight + 7 + 'px';
     this.cardNameBorder.nativeElement.style.minHeight = border;
 
-}
+  }
 }

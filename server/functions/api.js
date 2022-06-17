@@ -7,8 +7,16 @@ const _ = require('lodash');
 const { getFirestore } = require('firebase-admin/firestore');
 const db = getFirestore();
 
+const {
+    getUsersTop,
+    mapResponse,
+    mapTracks,
+    mapAlbums,
+    prepareStats,
+} = require('./utils');
 const validateFirebaseIdToken = require('./authMiddleware');
 const config = require('../config/config');
+const { getRecommendations } = require('./recommendations');
 
 const app = express();
 app.use(cors);
@@ -25,7 +33,7 @@ app.get('/recently-played', validateFirebaseIdToken, async (req, res) => {
             .map((item) => item.track)
             .map(mapTracks)
             .value();
-        //const data = result.data.items.map(mapTracks);
+
         res.status(200).send(data);
     } catch (error) {
         console.log(error);
@@ -73,7 +81,6 @@ app.get(
     '/compare/:comparedUser/',
     validateFirebaseIdToken,
     async (req, res) => {
-        //return res.send('???');
         try {
             const uid = req.uid;
             const comparedUser = req.params.comparedUser;
@@ -182,7 +189,6 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
         let seedTracks = [];
         //req.body contains tracks and albums on the basis of which recommendations will be generated
         for (const item of req.body) {
-            //console.log('ITEM', item);
             if (item.type === 'album') {
                 //get all albums tracks
                 const result = await axios.get(
@@ -194,7 +200,6 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
                     }
                 );
 
-                //console.log('WTF', result.data.items, 'WTF');
                 const albumTracks = _.map(result.data.items, (t) => t.id);
                 seedTracks = _.concat(seedTracks, albumTracks);
             } else seedTracks.push(item.data.id);
@@ -204,7 +209,7 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
 
         //get audio features of tracks
         //spotify allows to get featurs for max 100 tracks in one request, so we split in chunks
-        let audioFeatures = [];
+        let seedTracksAudioFeatures = [];
         const chunks = _.chunk(seedTracks, 100);
         for (const chunk of chunks) {
             const ids = _.join(chunk, ',');
@@ -217,201 +222,83 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
                 }
             );
 
-            console.log(result.data);
-            audioFeatures = _.concat(audioFeatures, result.data.audio_features);
+            for (const track of result.data.audio_features) {
+                seedTracksAudioFeatures.push([
+                    track.danceability,
+                    track.energy,
+                    track.key,
+                    track.loudness,
+                    track.mode,
+                    track.speechiness,
+                    track.acousticness,
+                    track.instrumentalness,
+                    track.liveness,
+                    track.valence,
+                    track.tempo,
+                    track.id,
+                ]);
+            }
+        }
+        //console.log(seedTracksAudioFeatures);
+        const top = await getRecommendations(seedTracksAudioFeatures);
+
+        if (!top) throw new Error('Could not generate recommendations');
+        //get recommended tracks data from spotify
+        let recommendedTracks = [];
+        for (const id of top) {
+            const result = await axios.get(
+                `https://api.spotify.com/v1/tracks/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${req.spotifyAccessToken}`,
+                    },
+                }
+            );
+
+            recommendedTracks.push(result.data);
         }
 
-        res.status(200).json(audioFeatures);
+        // Extend custom recommendations with spotify recommendations
+        let seedTrackIdsString;
+        if (seedTracks.length > 5) {
+            seedTrackIdsString = _.chain(seedTracks)
+                .shuffle()
+                .slice(0, 5)
+                .join(',')
+                .value();
+        } else {
+            seedTrackIdsString = _.chain(seedTracks)
+                .shuffle()
+                .join(',')
+                .value();
+        }
+
+        console.log('SEEDTRACKS', seedTrackIdsString);
+        const result = await axios.get(
+            `https://api.spotify.com/v1/recommendations?seed_tracks=${seedTrackIdsString}&limit=20`,
+            {
+                headers: {
+                    Authorization: `Bearer ${req.spotifyAccessToken}`,
+                },
+            }
+        );
+
+        result.data.tracks.forEach((track) => recommendedTracks.push(track));
+        recommendedTracks = _.chain(recommendedTracks)
+            .map(mapTracks)
+            .shuffle()
+            .value();
+
+        res.status(200).json(recommendedTracks);
     } catch (error) {
         console.log(error);
         res.status(400).json({ error: error.message });
     }
 });
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
 module.exports = app;
-
-//utils functions -> move to another file
-const getUsersTop = (type, timeRange, spotifyAccessToken) => {
-    return axios.get(
-        `https://api.spotify.com/v1/me/top/${type}?time_range=${timeRange}&limit=50`,
-        {
-            headers: {
-                Authorization: `Bearer ${spotifyAccessToken}`,
-            },
-        }
-    );
-};
-
-const mapResponse = (type) => {
-    switch (type) {
-        case 'artists':
-            return mapArtists;
-            break;
-        case 'tracks':
-            return mapTracks;
-            break;
-        default:
-            break;
-    }
-};
-
-const mapTracks = (item) => {
-    return {
-        artists: item.artists.map((artist) => {
-            return artist.name;
-        }),
-        name: item.name,
-        preview_url: item.preview_url,
-        popularity: item.popularity,
-        spotifyURL: item.external_urls.spotify,
-        spotifyURI: item.uri,
-        image: item.album.images[0].url,
-        id: item.id,
-    };
-};
-
-const mapArtists = (item) => {
-    return {
-        name: item.name,
-        popularity: item.popularity,
-        image: item.images[0].url,
-        genres: item.genres,
-        followers: item.followers.total,
-        spotifyURL: item.external_urls.spotify,
-        spotifyURI: item.uri,
-        id: item.id,
-    };
-};
-
-const mapAlbums = (item) => {
-    return {
-        name: item.name,
-        artists: item.artists.map((artist) => {
-            return artist.name;
-        }),
-        image: item.images[0].url,
-        spotifyURL: item.external_urls.spotify,
-        spotifyURI: item.uri,
-        id: item.id,
-    };
-};
-
-// prettier-ignore
-const prepareStats = (arr, uid, comparedUser) => {
-    //arr [0,1,2,6,7,8] = artists responses; else tracks
-    let [
-        myArtistsShort, myArtistsMedium, myArtistsLong, myTracksShort, myTracksMedium, myTracksLong, comparedUserArtistsShort, 
-        comparedUserArtistsMedium, comparedUserArtistsLong, comparedUserTracksShort, comparedUserTracksMedium, comparedUserTracksLong,
-    ] = arr.map(el => el.data.items).map((el,index) => {
-        if ([0,1,2,6,7,8].includes(index)) return el.map(mapArtists)
-        else return el.map(mapTracks);
-    }); 
-
-    //FOR TEST
-    if(uid === comparedUser) comparedUser = 'tmp';
-
-    return {
-        short: {
-            [uid]: { 
-                topArtists: myArtistsShort.slice(0,3), topTracks: myTracksShort.slice(0,3), favGenres: favGenres(myArtistsShort), 
-                mostPopularArtists: nOfMax(myArtistsShort, 'popularity', 3), leastPopularArtists: nOfMin(myArtistsShort, 'popularity', 3),
-                mostPopularTracks: nOfMax(myTracksShort, 'popularity', 3), leastPopularTracks: nOfMin(myTracksShort, 'popularity', 3)
-            },
-            [comparedUser]: {
-                topArtists: comparedUserArtistsShort.slice(0,3), 
-                topTracks: comparedUserTracksShort.slice(0,3), 
-                favGenres: favGenres(comparedUserArtistsShort),
-                mostPopularArtists: nOfMax(comparedUserArtistsShort, 'popularity', 3),
-                leastPopularArtists: nOfMin(comparedUserArtistsShort, 'popularity', 3),
-                mostPopularTracks: nOfMax(comparedUserTracksShort, 'popularity', 3), 
-                leastPopularTracks: nOfMin(comparedUserTracksShort, 'popularity', 3)
-            },
-            artistsIntersection: intersection(myArtistsShort, comparedUserArtistsShort, 'id'),
-            tracksIntersection: intersection(myTracksShort, comparedUserTracksShort, 'id')
-        },
-        medium: {
-            [uid]: { 
-                topArtists: myArtistsMedium.slice(0,3), topTracks: myTracksMedium.slice(0,3), favGenres: favGenres(myArtistsMedium),
-                mostPopularArtists: nOfMax(myArtistsMedium, 'popularity', 3), leastPopularArtists: nOfMin(myArtistsMedium, 'popularity', 3),
-                mostPopularTracks: nOfMax(myTracksMedium, 'popularity', 3), leastPopularTracks: nOfMin(myTracksMedium, 'popularity', 3)
-            },
-            [comparedUser]: {
-                topArtists: comparedUserArtistsMedium.slice(0,3), 
-                topTracks: comparedUserTracksMedium.slice(0,3), 
-                favGenres: favGenres(comparedUserArtistsMedium),
-                mostPopularArtists: nOfMax(comparedUserArtistsMedium, 'popularity', 3),
-                leastPopularArtists: nOfMin(comparedUserArtistsMedium, 'popularity', 3),
-                mostPopularTracks: nOfMax(comparedUserTracksMedium, 'popularity', 3), 
-                leastPopularTracks: nOfMin(comparedUserTracksMedium, 'popularity', 3)
-            },
-            artistsIntersection: intersection(myArtistsMedium, comparedUserArtistsMedium, 'id'),
-            tracksIntersection: intersection(myTracksMedium, comparedUserTracksMedium, 'id')
-        },
-        long: {
-            [uid]: { 
-                topArtists: myArtistsLong.slice(0,3), topTracks: myTracksLong.slice(0,3), favGenres: favGenres(myArtistsLong),
-                mostPopularArtists: nOfMax(myArtistsLong, 'popularity', 3), leastPopularArtists: nOfMin(myArtistsLong, 'popularity', 3),
-                mostPopularTracks: nOfMax(myTracksLong, 'popularity', 3), leastPopularTracks: nOfMin(myTracksLong, 'popularity', 3) 
-            },
-            [comparedUser]: {
-                topArtists: comparedUserArtistsLong.slice(0,3), 
-                topTracks: comparedUserTracksLong.slice(0,3), 
-                favGenres: favGenres(comparedUserArtistsLong),
-                mostPopularArtists: nOfMax(comparedUserArtistsLong, 'popularity', 3),
-                leastPopularArtists: nOfMin(comparedUserArtistsLong, 'popularity', 3),
-                mostPopularTracks: nOfMax(comparedUserTracksLong, 'popularity', 3), 
-                leastPopularTracks: nOfMin(comparedUserTracksLong, 'popularity', 3)
-            },
-            artistsIntersection: intersection(myArtistsLong, comparedUserArtistsLong, 'id'),
-            tracksIntersection: intersection(myTracksLong, comparedUserTracksLong, 'id')
-        }
-    }
-};
-
-const favGenres = (arr) => {
-    let genres = [];
-    arr.forEach((el) => {
-        el.genres.forEach((genre) => {
-            genres.push(genre);
-        });
-    });
-
-    //count occurences
-    let count = {};
-    for (const el of genres) {
-        if (count[el]) {
-            count[el] += 1;
-        } else {
-            count[el] = 1;
-        }
-    }
-
-    //get top3
-    let fav = [];
-    for (let i = 0; i < 3; i++) {
-        const key = Object.keys(count).reduce((a, b) =>
-            count[a] > count[b] ? a : b
-        );
-        fav.push(key);
-        delete count[key];
-    }
-    return fav;
-};
-
-const nOfMax = (collection, key, n) => {
-    return _.chain(collection)
-        .sortBy((item) => item[key])
-        .reverse()
-        .slice(0, n)
-        .value();
-};
-
-const nOfMin = (collection, key, n) => {
-    return _.chain(collection)
-        .sortBy((item) => item[key])
-        .slice(0, n)
-        .value();
-};
-
-const intersection = (arr1, arr2, key) =>
-    _.intersectionWith(arr1, arr2, (x, y) => x[key] === y[key]);

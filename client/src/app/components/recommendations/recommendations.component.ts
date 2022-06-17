@@ -21,6 +21,8 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   albums: Array<AlbumResponse> = [];
   tracks: Array<TrackResponse> = [];
   selected: Array<any> = [];
+  recommendations: Array<TrackResponse> = [];
+  displayModal: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -68,12 +70,20 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
     this.recommendationsService
       .getRecommendations(this.user, this.selected)
       .subscribe(
-        (tracks) => {
-          console.log(tracks);
+        (recommendations) => {
+          this.recommendations = recommendations;
         },
         (err) => {
           console.log(err);
         }
       );
+  }
+
+  displayRecommendations(): void {
+    this.displayModal = true;
+  }
+
+  hideRecommendations(): void {
+    this.displayModal = false;
   }
 }
