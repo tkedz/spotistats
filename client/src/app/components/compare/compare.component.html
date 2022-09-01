@@ -1,6 +1,7 @@
 <section class="compare">
-    <div class="loading" *ngIf="!compareData">Loading...</div>
-    <div class="compare__wrapper" *ngIf="user && compareData">
+    <div class="heading-2 flex center" *ngIf="!compareData && !error">Ładowanie...</div>
+    <div class="heading-2 flex center" *ngIf="error">{{error}}</div>
+    <div class="compare__wrapper" *ngIf="user && compareData && !error">
         <div class="profiles__wrapper heading-1 center">
             <img [src]="user.img" alt="" class="profile__photo profile__photo--border-1" style="margin: 0 12px;">
             <span>{{user.displayName}} 🆚 {{comparedUserName}}</span>

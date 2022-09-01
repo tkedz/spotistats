@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { CompareResponse, SpotifyService } from 'src/app/services/spotify.service';
 import { take } from 'rxjs/operators';
@@ -21,18 +21,22 @@ export class CompareComponent implements OnInit, OnDestroy {
   comparedUserName: string
   compareData: CompareResponse;
   displayData: any;
+  error: string;
 
   constructor(
     private authService: AuthService,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
     private storageService: StorageService,
     private spotifyService: SpotifyService
-  ) {}
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit(): void {
     this.userSub = this.authService.user.pipe(take(1)).subscribe((user) => {
       this.user = user;
-      this.comparedUserName = this.route.snapshot.paramMap.get('id');
+      this.comparedUserName = this.activatedRoute.snapshot.paramMap.get('id');
 
       this.spotifyService.compare(this.user, this.comparedUserName)
         .subscribe((res) => {
@@ -40,7 +44,7 @@ export class CompareComponent implements OnInit, OnDestroy {
           this.compareData = res;
           this.displayData = this.compareData.short;
         }, (err) => {
-          
+          this.error = 'Podany użytkownik nie korzysta z aplikacji'
         });
     });
   }

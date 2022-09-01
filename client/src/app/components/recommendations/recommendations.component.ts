@@ -67,8 +67,15 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   }
 
   onGetRecommendations(): void {
+    console.log(this.selected);
+    const set = [];
+    for(const element of this.selected) {
+      set.push({type: element.type, id: element.data.id});
+    }
+
+
     this.recommendationsService
-      .getRecommendations(this.user, this.selected)
+      .getRecommendations(this.user, set)
       .subscribe(
         (recommendations) => {
           this.recommendations = recommendations;

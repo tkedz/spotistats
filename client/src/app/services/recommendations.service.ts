@@ -7,7 +7,8 @@ import { AlbumResponse, TrackResponse } from './spotify.service';
 
 interface Set {
   type: string,
-  data: Array<AlbumResponse> | Array<TrackResponse>
+  //data: Array<AlbumResponse> | Array<TrackResponse>
+  id:string
 }
 
 @Injectable({

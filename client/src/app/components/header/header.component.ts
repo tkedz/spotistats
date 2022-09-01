@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -19,8 +20,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean;
   photo: any;
   private userSub: Subscription;
+  compareWith: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.userSub = this.authService.user.subscribe((user) => {
@@ -42,5 +44,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onLogout() {
     this.authService.logout();
+  }
+
+  onSearch(): void {
+    this.router.navigate([`/compare/${this.compareWith}`])
   }
 }

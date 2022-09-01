@@ -36,6 +36,7 @@
 html {
   box-sizing: border-box;
   font-size: 62.5%;
+  /* font-size: 55%; */
 }
 
 body {
@@ -57,7 +58,7 @@ body {
 section::before {
   content: "";
   display: block;
-  height: 8vh;
+  height: 4vh;
 }
 
 .button {
@@ -167,5 +168,9 @@ background-color: var(--color-tertiary);
 }
 
 .is-active {
-background-color: var(--color-tertiary);
+  background-color: var(--color-tertiary);
+}
+
+.is-active--header {
+  color: var(--color-grey-dark-3);
 }
