@@ -41,10 +41,11 @@ const mapTracks = (item) => {
 };
 
 const mapArtists = (item) => {
+    //console.log(item);
     return {
         name: item.name,
         popularity: item.popularity,
-        image: item.images[0].url,
+        image: item.images.length > 0 ? item.images[0].url : '',
         genres: item.genres,
         followers: item.followers.total,
         spotifyURL: item.external_urls.spotify,

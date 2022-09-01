@@ -192,7 +192,7 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
             if (item.type === 'album') {
                 //get all albums tracks
                 const result = await axios.get(
-                    `https://api.spotify.com/v1/albums/${item.data.id}/tracks`,
+                    `https://api.spotify.com/v1/albums/${item.id}/tracks`,
                     {
                         headers: {
                             Authorization: `Bearer ${req.spotifyAccessToken}`,
@@ -202,7 +202,7 @@ app.post('/recommendations', validateFirebaseIdToken, async (req, res) => {
 
                 const albumTracks = _.map(result.data.items, (t) => t.id);
                 seedTracks = _.concat(seedTracks, albumTracks);
-            } else seedTracks.push(item.data.id);
+            } else seedTracks.push(item.id);
         }
 
         seedTracks = _.uniq(seedTracks);
