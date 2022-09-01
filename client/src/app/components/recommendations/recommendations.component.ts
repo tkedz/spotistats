@@ -23,11 +23,15 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   selected: Array<any> = [];
   recommendations: Array<TrackResponse> = [];
   displayModal: boolean = false;
+  recommendationsError: boolean = false;
+  generatingRecommendations: boolean = false;
+  searching: boolean = false;
+  searchError: boolean = false;
 
   constructor(
     private authService: AuthService,
     private spotifyService: SpotifyService,
-    private recommendationsService: RecommendationsService
+    private recommendationsService: RecommendationsService,
   ) {}
 
   ngOnInit(): void {
@@ -41,13 +45,19 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
+    this.searching = true;
+    this.searchError = false;
+
     this.spotifyService.search(this.user, this.searchValue).subscribe(
       (res) => {
+        this.searching = false;
         this.albums = res.albums;
         this.tracks = res.tracks;
         console.log(this.albums, this.tracks);
       },
       (err) => {
+        this.searching = false;
+        this.searchError = true;
         console.log(err);
       }
     );
@@ -67,20 +77,25 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   }
 
   onGetRecommendations(): void {
+    this.generatingRecommendations = true;
+    this.recommendationsError = false;
+
     console.log(this.selected);
     const set = [];
     for(const element of this.selected) {
       set.push({type: element.type, id: element.data.id});
     }
 
-
     this.recommendationsService
       .getRecommendations(this.user, set)
       .subscribe(
         (recommendations) => {
+          this.generatingRecommendations = false;
           this.recommendations = recommendations;
         },
         (err) => {
+          this.generatingRecommendations = false;
+          this.recommendationsError = true;
           console.log(err);
         }
       );

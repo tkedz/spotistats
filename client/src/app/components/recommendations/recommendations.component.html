@@ -9,6 +9,9 @@
                 <button class="search__button" (click)="onSearch()">🔎</button>
             </div>
 
+            <div class="loading" *ngIf="searching"></div>
+            <div *ngIf="!searching && searchError">Coś poszło nie tak spróbuj ponownie później</div>
+
             <div class="search__results">
                 <div *ngFor="let album of albums; let i = index" class="item">
                     <img class="item--cover" [src]="album.image">
@@ -51,9 +54,13 @@
 
             <div class="heading-2" *ngIf="selected.length">Twój zbiór 👇
             </div>
-            <button class="button " *ngIf="selected.length" (click)="onGetRecommendations()">Generuj
+            <button class="button" *ngIf="selected.length" (click)="onGetRecommendations()">Generuj
                 rekomendacje</button>
-            <button class="button " *ngIf="recommendations.length" (click)="displayRecommendations()">Wyświetl
+            <div *ngIf="recommendationsError && recommendations.length === 0">Nie udało się wygenerować rekomendacji,
+                spróbuj ponownie później</div>
+            <div class="loading" *ngIf="generatingRecommendations"></div>
+            <button class="button " *ngIf="!recommendationsError && recommendations.length"
+                (click)="displayRecommendations()">Wyświetl
                 rekomendacje</button>
 
             <div class="selected">
@@ -81,7 +88,6 @@
     </div>
 
     <div class="modal" *ngIf="displayModal">
-
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close" (click)="hideRecommendations()">&times;</span>
