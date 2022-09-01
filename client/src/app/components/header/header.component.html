@@ -45,7 +45,7 @@
             *ngIf="isLoggedIn">
             <strong>Rekomendacje</strong>
         </a>
-        <div class="search__box">
+        <div class="search__box" *ngIf="isLoggedIn">
             <input class="search__input" type="text" [(ngModel)]="compareWith" (keydown.enter)="onSearch()"
                 placeholder="Porównaj gusta z ...">
             <button class="search__button" (click)="onSearch()">🔎</button>
