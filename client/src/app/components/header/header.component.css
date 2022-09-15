@@ -5,6 +5,8 @@
   justify-content: space-between;
   flex-direction: row;
   padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #2b2b2b;
 }
 
 .logo {
@@ -26,7 +28,6 @@
   align-items: center;
   align-self: flex-start;
 
-  
   font-size: 1.5rem;
 
   /* position: absolute;
@@ -66,7 +67,7 @@
 
 .button--login {
   background-color: var(--color-secondary);
-  transition: background-color .5s ease;
+  transition: background-color 0.5s ease;
 }
 
 .button--login:hover {
@@ -76,7 +77,7 @@
 .button--logout {
   background-color: #bf0603;
   color: var(--color-grey-light-1);
-  transition: background-color .5s ease;
+  transition: background-color 0.5s ease;
 }
 
 .button--logout:hover {
@@ -95,13 +96,12 @@
 }
 
 .search__input {
-  border:none;
+  border: none;
   background: none;
-  outline:none;
+  outline: none;
   width: 90%;
   /* padding: 0 6px; */
   font-size: 1.4rem;
-
 }
 
 .search__button {
@@ -110,7 +110,7 @@
   border: none;
   font-size: 1.4rem;
   margin-right: 6px;
-  transition: font-size .1s;
+  transition: font-size 0.1s;
 }
 
 .search__button:hover {
