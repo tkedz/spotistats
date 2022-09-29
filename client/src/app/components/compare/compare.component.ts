@@ -2,7 +2,6 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/models/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StorageService } from 'src/app/services/storage.service';
 import { CompareResponse, SpotifyService } from 'src/app/services/spotify.service';
 import { take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -27,7 +26,6 @@ export class CompareComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private storageService: StorageService,
     private spotifyService: SpotifyService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;

@@ -11,7 +11,6 @@ import { User } from 'src/app/models/user.model';
 export class ProfileComponent implements OnInit, OnDestroy {
   public user: User = null;
   userSub: Subscription;
-  //isActiveRecentlyPlayedComponent = true;
 
   constructor(private authService: AuthService) {}
 

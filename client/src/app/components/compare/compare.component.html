@@ -114,13 +114,15 @@
             <div class="category__name heading-2">Ulubione gatunki</div>
             <div class="flex" style="flex-shrink: 0;">
                 <img [src]="user.img" alt="" class="profile__photo center-self  profile__photo--border-1">
-                <div *ngFor="let genre of displayData[user.displayName].favGenres" class="genre genre-1">
-                    {{genre}}
+                <div *ngFor="let genre of displayData[user.displayName].favGenres"
+                    style="align-self: center; margin-top: -1rem;">
+                    <div class="genre genre-1">{{genre}}</div>
                 </div>
             </div>
             <div class="flex">
-                <div *ngFor="let genre of displayData[comparedUserName].favGenres" class="genre">
-                    {{genre}}
+                <div *ngFor="let genre of displayData[comparedUserName].favGenres"
+                    style="align-self: center; margin-top: -1rem;">
+                    <div class="genre genre-2">{{genre}}</div>
                 </div>
                 <img [src]="compareData.comparedUserAvatar" alt=""
                     class="profile__photo center-self  profile__photo--border-2">

@@ -10,7 +10,6 @@ import { FrontpageComponent } from './components/frontpage/frontpage.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { RecentlyListenedComponent } from './components/recently-listened/recently-listened.component';
 import { TopArtistsComponent } from './components/top-artists/top-artists.component';
-import { ComparisionProfileComponent } from './components/comparision-profile/comparision-profile.component';
 import { CompareComponent } from './components/compare/compare.component';
 import { TopTracksComponent } from './components/top-tracks/top-tracks.component';
 import { CardComponent } from './components/card/card.component';
@@ -27,7 +26,6 @@ import { FormsModule } from '@angular/forms';
     ProfileComponent,
     RecentlyListenedComponent,
     TopArtistsComponent,
-    ComparisionProfileComponent,
     CompareComponent,
     TopTracksComponent,
     CardComponent,

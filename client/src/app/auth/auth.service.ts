@@ -25,14 +25,12 @@ export class AuthService {
             userData.displayName,
             userData.id,
             userData.images as Image[],
-            //userData.spotifyAccessToken,
             userData.firebaseAccessToken,
             userData.firebaseRefreshToken,
             Math.ceil(new Date().getTime() / 1000) + +userData.expiresIn!
           );
           loggedUser.save();
           this.user.next(loggedUser);
-          //localStorage.setItem('userData', JSON.stringify(loggedUser));
           this.autoLogout(+userData.expiresIn! * 1000);
           this.autoRefresh();
         },
@@ -44,31 +42,6 @@ export class AuthService {
       );
   }
 
-
-  // autoLogin() {
-  //   const user = JSON.parse(localStorage.getItem('userData')!);
-
-  //   if (user) {
-  //     const loggedUser = new User(
-  //       user.displayName,
-  //       user.id,
-  //       user.images as Image[],
-  //       //user._spotifyToken,
-  //       user._firebaseToken,
-  //       +user._accessExpiration
-  //     );
-  //     const currentDate = Math.ceil(new Date().getTime() / 1000);
-  //     const tokenExpirationDate = loggedUser.accessExpiration;
-
-  //     if (currentDate < tokenExpirationDate) {
-  //       this.user.next(loggedUser);
-  //       this.autoLogout((tokenExpirationDate - currentDate) * 1000);
-  //     } else {
-  //       this.logout();
-  //     }
-  //   }
-  // }
-
   autoLogin() {
     const user = JSON.parse(localStorage.getItem('userData')!);
 
@@ -77,7 +50,6 @@ export class AuthService {
         user.displayName,
         user.id,
         user.images as Image[],
-        //user._spotifyToken,
         user._accessToken,
         user._refreshToken,
         +user._expiration
@@ -91,7 +63,6 @@ export class AuthService {
   logout() {
     this.user.value.remove();
     this.user.next(null);
-    //localStorage.removeItem('userData');
     if (this.logoutTimer) {
       clearTimeout(this.logoutTimer);
     }
@@ -100,7 +71,6 @@ export class AuthService {
   }
 
   autoLogout(expiresIn: number) {
-    //console.log(expiresIn);
     if(this.logoutTimer) {
       clearTimeout(this.logoutTimer);
       this.logoutTimer = null;
@@ -120,7 +90,6 @@ export class AuthService {
 
     const currentDate = Math.ceil(new Date().getTime() / 1000);
     const tokenExpirationDate = loggedUser.expiration;
-    //console.log(tokenExpirationDate, currentDate);
 
     if (currentDate < tokenExpirationDate) {
       console.log('refresh call');
@@ -158,7 +127,6 @@ export class AuthService {
   }
 
   loginRedirect() {
-    // window.location.href = `https://accounts.spotify.com/authorize?client_id=${environment.spotifyClientId}&response_type=token&redirect_uri=http://localhost:4200/&scope=user-top-read,user-read-recently-played`;
     window.location.href = `https://accounts.spotify.com/authorize?client_id=${environment.spotifyClientId}&response_type=code&redirect_uri=http://localhost:4200&scope=user-top-read,user-read-recently-played`;
   }
 }

@@ -1,5 +1,4 @@
 .navbar {
-  /* height: 8vh; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11,14 +10,8 @@
 
 .logo {
   font-size: 2rem;
-  /* padding: 0 1rem; */
   text-decoration: none;
   color: var(--color-grey-light-1);
-
-  /* position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 20; */
 }
 
 .navbar__start {
@@ -29,11 +22,6 @@
   align-self: flex-start;
 
   font-size: 1.5rem;
-
-  /* position: absolute;
-  left: 1rem;
-  top: 1rem;
-  z-index: 20; */
 }
 
 .navbar__start--link {
@@ -43,16 +31,9 @@
 }
 
 .navbar__end {
-  /* margin-top: 1rem; */
   padding: 0 1rem;
-
   display: flex;
   align-items: center;
-
-  /* position: absolute;
-  right: 1rem;
-  top: 1rem;
-  z-index: 20; */
 }
 
 .navbar__item:not(:last-child) {

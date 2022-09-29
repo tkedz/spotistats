@@ -6,7 +6,9 @@ import { AuthService } from 'src/app/auth/auth.service';
 @Component({
   selector: 'app-frontpage',
   templateUrl: './frontpage.component.html',
-  styleUrls: ['./frontpage.component.css'],
+  styleUrls: ['./frontpage.component.css', 
+  '../../../assets/bootstrap.min.css'
+],
 })
 export class FrontpageComponent implements OnInit {
   title: string = 'Some title'

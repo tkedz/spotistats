@@ -1,48 +1,6 @@
-<!-- <section class="hero is-success mb-3">
-    <div class="hero-body">
-        <div class="container center" style="flex-direction: column;">
-            <h1 class="title">
-                🎼 Twoje ulubione kawałki z ostatniego... 🎼
-            </h1>
-            <div class="field is-grouped">
-                <p class="control">
-                    <button class="button" (click)="onGetFavTracks('short_term')">
-                        miesiąca
-                    </button>
-                </p>
-                <p class="control">
-                    <button class="button" (click)="onGetFavTracks('medium_term')">
-                        pół roku
-                    </button>
-                </p>
-                <p class="control">
-                    <button class="button" (click)="onGetFavTracks('long_term')">
-                        lat
-                    </button>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="has-background-light">
-    <div class="container">
-        <div class="columns" style="flex-wrap: wrap;">
-            <div class="column is-one-third has-text-centered" *ngFor="let track of top3tracks; let i = index;">
-                <app-card [track]="track" id="top3"></app-card>
-                <div *ngIf="i===0" class="medal">🥇</div>
-                <div *ngIf="i===1" class="medal">🥈</div>
-                <div *ngIf="i===2" class="medal">🥉</div>
-            </div>
-        </div>
-    </div>
-</div>
--->
 <p *ngIf="error">Nie udało się pobrać danych ze Spotify</p>
 <div class="flex center" style="margin-top: 2.4rem;">
     <div *ngFor="let track of tracks">
         <app-card [track]="track" id="rest"></app-card>
     </div>
 </div>
-
-<!-- NEW -->

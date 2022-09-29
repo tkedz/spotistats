@@ -14,10 +14,6 @@ export class User {
     private _expiration: number
   ) {}
 
-  // get spotifyToken() {
-  //   return this._spotifyToken;
-  // }
-
   get accessToken() {
     return this._accessToken;
   }
