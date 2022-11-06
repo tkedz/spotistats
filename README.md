@@ -6,7 +6,7 @@ An app that uses the Spotify API. Current functionality:
 -   browsing recently played songs with the possibility to listen to a 30 second excerpt
 -   displaying the list of favorite artists and songs in different periods
 
-Additionally the application will be extended with a simple music recommendation system based on audio features of tracks and dataset available on [kaggle.com](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs)
+Additionally the application is extended with a simple music recommendation system based on audio features of tracks and dataset available on [kaggle.com](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs)
 
 ## Technologies
 
@@ -24,3 +24,6 @@ Comparision (app is not public so I'm comparing myself to myself while testing)
 
 User profile
 [![spotistats1.png](https://i.postimg.cc/ZR2rKX5D/spotistats1.png)](https://postimg.cc/CBCZcPDj)
+
+Recommendations
+[![spotistats-recommendations.jpg](https://i.postimg.cc/HsBVV3Mp/spotistats-recommendations.jpg)](https://postimg.cc/ZCvTQ8jg)
